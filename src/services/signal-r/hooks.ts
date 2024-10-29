@@ -3,14 +3,17 @@ import { DependencyList, useEffect } from "react";
 import { Context, Hub } from "./types";
 
 function createUseSignalREffect<T extends Hub>(context: Context<T>) {
-  const useSignalREffect = <T extends string, C extends (...args: any) => void>(
+  const useSignalREffect = <
+    T extends string,
+    C extends (...args: unknown[]) => void,
+  >(
     events: T,
     callback: C,
     deps: DependencyList,
   ) => {
     useEffect(() => {
       let _events: string[];
-      function _callback(args: any[]) {
+      function _callback(args: unknown[]) {
         callback(...args);
       }
 

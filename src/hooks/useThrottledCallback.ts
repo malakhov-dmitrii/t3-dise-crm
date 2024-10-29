@@ -4,11 +4,10 @@ import { useCallback, useMemo } from "react";
 
 export default function useThrottledCallback<T extends AnyToVoidFunction>(
   fn: T,
-  deps: any[],
+  deps: unknown[],
   msOrSchedulerFn: number | Scheduler,
   noFirst = false,
 ) {
-  // eslint-disable-next-line react-hooks-static-deps/exhaustive-deps
   const fnMemo = useCallback(fn, deps);
 
   return useMemo(() => {

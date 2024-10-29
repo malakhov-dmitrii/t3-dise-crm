@@ -93,6 +93,7 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
         return;
       }
 
+      // @ts-expect-error - TODO: fix this
       setArgs(getArgs(iframeRef.current.contentWindow));
     },
     args ? null : 200,
@@ -118,7 +119,7 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
   const debouncedToast = useDebounceCallback(toast.success, 1000);
 
   const throttledAuthStateChange = useThrottledCallback(
-    (state) => {
+    (state: { authed: true; userId: string } | { authed: false }) => {
       // console.log("authStateChanged", state);
       console.log("AuthState", { state, tgUserId, tgConnected });
       if (state.authed && state.userId && !tgUserId && !tgConnected) {

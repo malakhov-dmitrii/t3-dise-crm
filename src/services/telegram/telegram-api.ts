@@ -1,6 +1,7 @@
 import { Requester } from "jsonrpc-iframe";
 import { mergeIntoObservable, observable } from "@legendapp/state";
 import { Methods, Custom } from "./types";
+import { ApiChat, ApiChatFolder, ApiChatFullInfo, ApiMessage } from "@/types";
 type FoldersResponse = NonNullable<
   Awaited<ReturnType<Methods["fetchChatFolders"]>>
 >;
@@ -43,7 +44,9 @@ export async function fetchChatFolders(methods: Requester<Methods>) {
     state$.folders.byId.assign(folders.byId);
     const byId = state$.folders.byId.peek();
     state$.folders.list.set(
-      folders.orderedIds.map((id) => byId[id]).filter(Boolean),
+      folders.orderedIds
+        .map((id) => byId[id])
+        .filter(Boolean) as ApiChatFolder[],
     );
 
     const foldersResponse = {
@@ -85,7 +88,7 @@ export async function loadChatsInFolder(
     return undefined;
   }
 
-  state$.chats.inFolder[folderId].set(
+  state$.chats.inFolder[folderId]?.set(
     response.map(({ id, chat, fullInfo }) => ({
       id,
       chat: chat!,

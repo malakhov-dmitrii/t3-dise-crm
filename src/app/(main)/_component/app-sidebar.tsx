@@ -15,14 +15,14 @@ import { useIframeOpen } from "@/services";
 import {
   Bell,
   ChevronDown,
+  FolderSync,
   Kanban,
-  LogIn,
   LogOut,
-  Plus,
   Send,
   Settings,
   ToggleLeft,
   ToggleRight,
+  Users,
 } from "lucide-react";
 import { Inbox } from "lucide-react";
 import { Home } from "lucide-react";
@@ -39,28 +39,31 @@ import {
 import { api } from "@/trpc/react";
 import { useLastWorkspaceId } from "./main-layout";
 import { useCreateWorkspaceDialogOpen } from "@/components/dialogs/create-workspace-dialog";
-import { PlusCircledIcon, PlusIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { ThemeToggle } from "@/components/utils/theme-toggle";
+import { useTranslations } from "next-intl";
+import { LocaleToggle } from "@/components/utils/locale-toggle";
+import { useSyncFoldersDialogOpen } from "@/components/dialogs/sync-folders-dialog/sync-folders-dialog";
 
 // Menu items.
-const items = [
+const items = (t: ReturnType<typeof useTranslations>) => [
   {
-    title: "Dashboard",
+    title: t("Dashboard"),
     url: "#",
     icon: Home,
   },
   {
-    title: "Tasks",
+    title: t("Tasks"),
     url: "#",
     icon: Inbox,
   },
   {
-    title: "Notifications",
+    title: t("Notifications"),
     url: "#",
     icon: Bell,
   },
   {
-    title: "Batch send",
+    title: t("Batch send"),
     url: "#",
     icon: Send,
     soon: true,
@@ -68,7 +71,10 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const t = useTranslations("AppSidebar");
   const [isOpen, setIsOpen] = useCreateWorkspaceDialogOpen();
+  const [syncFoldersDialogOpen, setSyncFoldersDialogOpen] =
+    useSyncFoldersDialogOpen();
   const [iframeOpen, setIframeOpen] = useIframeOpen();
   const logout = useLogout();
   const [lastWorkspaceId] = useLastWorkspaceId();
@@ -86,12 +92,13 @@ export function AppSidebar() {
           <DropdownMenu>
             <DropdownMenuTrigger disabled={isLoading}>
               <SidebarGroupLabel>
-                Workspace: {currentWorkspace?.name ?? "..."} <ChevronDown />
+                {t("Workspace")}: {currentWorkspace?.name ?? "..."}{" "}
+                <ChevronDown />
               </SidebarGroupLabel>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel className="text-xs">
-                Workspaces list
+                {t("Workspaces list")}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {workspaces?.map((workspace) => (
@@ -113,13 +120,13 @@ export function AppSidebar() {
                 onClick={() => setIsOpen(true)}
               >
                 <PlusIcon className="h-1 w-1" />
-                <p>Create new</p>
+                <p>{t("Create new")}</p>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {items(t).map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url} aria-disabled={item.soon}>
@@ -138,32 +145,46 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Actions</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Actions")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => setIframeOpen(!iframeOpen)}>
                   {iframeOpen ? <ToggleRight /> : <ToggleLeft />}
-                  <span>Toggle Telegram</span>
+                  <span>{t("Toggle Telegram")}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setSyncFoldersDialogOpen(true)}
+                >
+                  <FolderSync />
+                  <span>{t("Sync Chats")}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Workspace")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton>
+                  <Users />
+                  <span>{t("Team")}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
                   <Kanban />
-                  <span>Pipeline</span>
+                  <span>{t("Pipeline")}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <Settings />
-                  <span>Settings</span>
+                  <span>{t("Settings")}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -172,8 +193,10 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem className="ml-2">
+              <SidebarMenuItem className="ml-1 flex flex-wrap items-center gap-2">
                 <ThemeToggle />
+
+                <LocaleToggle />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -185,7 +208,7 @@ export function AppSidebar() {
         <SidebarMenuItem>
           <SidebarMenuButton onClick={logout}>
             <LogOut />
-            <span>Logout</span>
+            <span>{t("Logout")}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarFooter>

@@ -3,7 +3,7 @@
 export default function Page({ params }: { params: { workspaceId: string } }) {
   return (
     <div className="w-full">
-      <div className="h-[calc(100vh-5rem)] w-full rounded-lg bg-card py-4 shadow">
+      <div className="h-[calc(100vh-5rem)] w-full rounded-lg bg-white py-4 shadow dark:bg-neutral-900">
         <p className="text-center text-sm text-muted-foreground">
           Pipelines will be here
         </p>

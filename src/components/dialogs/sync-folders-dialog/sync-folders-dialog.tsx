@@ -8,13 +8,18 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "../../ui/dialog";
+import { useGetTgApiFolders } from "@/services/telegram/queries";
 
 const syncFoldersDialogOpen = atom(false);
 export const useSyncFoldersDialogOpen = () => useAtom(syncFoldersDialogOpen);
 
 const SyncFoldersDialog = () => {
   const [isOpen, setIsOpen] = useSyncFoldersDialogOpen();
+  const { data: folders, isLoading, isError } = useGetTgApiFolders();
+
+  console.log(folders);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
@@ -24,6 +29,12 @@ const SyncFoldersDialog = () => {
             Sync folders to start managing your pipelines.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="flex flex-col gap-4">
+          {folders?.list.map((folder) => (
+            <div key={folder.id}>{folder.title}</div>
+          ))}
+        </div>
       </DialogContent>
     </Dialog>
   );

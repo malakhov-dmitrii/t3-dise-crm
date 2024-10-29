@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,26 +9,34 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { atom } from "jotai";
+import { Languages } from "lucide-react";
+import { api } from "@/trpc/react";
+import { useTranslations } from "next-intl";
 
 export function LocaleToggle() {
-  const { setTheme } = useTheme();
+  const t = useTranslations("AppSidebar");
+  const utils = api.useUtils();
+  const { mutate: setLocale, isPending } = api.user.setLocale.useMutation({
+    onSettled: async () => {
+      await utils.user.getUser.invalidate();
+      location.reload();
+    },
+  });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Switch language</span>
+        <Button variant="outline" size="icon" loading={isPending}>
+          <Languages className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+          <span className="sr-only">{t("Switch language")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => setLocale({ locale: "en" })}>
           English
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Russian
+        <DropdownMenuItem onClick={() => setLocale({ locale: "ru" })}>
+          Русский
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

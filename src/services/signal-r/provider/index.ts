@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/unbound-method */
 import hermes from "hermes-channel";
 import { useEffect, useRef, useState } from "react";
 import jsCookie from "js-cookie";
@@ -34,7 +41,7 @@ function providerFactory<T extends Hub>(Context: Context<T>) {
       }
 
       const connection = createConnection(url, {
-        accessTokenFactory: () => accessTokenFactoryRef.current?.() || "",
+        accessTokenFactory: () => accessTokenFactoryRef.current?.() ?? "",
         logger,
         ...rest,
       });
@@ -51,7 +58,7 @@ function providerFactory<T extends Hub>(Context: Context<T>) {
       });
 
       let lastConnectionSentState: number | null =
-        Number(jsCookie.get(KEY_LAST_CONNECTION_TIME)) || null;
+        Number(jsCookie.get(KEY_LAST_CONNECTION_TIME)) ?? null;
       let anotherTabConnectionId: string | null = null;
 
       /** If another tab connected to signalR we will receive this event */
@@ -60,7 +67,7 @@ function providerFactory<T extends Hub>(Context: Context<T>) {
         if (!_anotherTabConnectionId) {
           lastConnectionSentState = null;
           anotherTabConnectionId = null;
-          checkForStart();
+          void checkForStart();
 
           return;
         }
@@ -71,7 +78,7 @@ function providerFactory<T extends Hub>(Context: Context<T>) {
         lastConnectionSentState = Date.now();
         if (!isConnectionConnecting(connection)) {
           sentInterval && clearInterval(sentInterval);
-          connection.stop();
+          void connection.stop();
         }
       });
 
@@ -161,7 +168,7 @@ function providerFactory<T extends Hub>(Context: Context<T>) {
     return children;
   };
 
-  return Provider as any;
+  return Provider as never;
 }
 
 function shoutConnected(anotherTabConnectionId: string | null) {

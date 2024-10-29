@@ -1,10 +1,11 @@
 import type {
-  ApiCallProtocol, ApiPhoneCallConnection,
+  ApiCallProtocol,
+  ApiPhoneCallConnection,
   GroupCallConnectionState,
   GroupCallParticipant,
   VideoRotation,
   VideoState,
-} from '../../lib/secret-sauce';
+} from "../../../telegram-tt/src/lib/secret-sauce";
 
 export interface ApiGroupCall {
   chatId?: string;
@@ -17,7 +18,7 @@ export interface ApiGroupCall {
   joinDateAsc?: true;
   scheduleStartSubscribed?: true;
   participantsCount: number;
-  params?: any;
+  params?: Record<string, unknown>;
   title?: string;
   streamDcId?: number;
   recordStartDate?: number;
@@ -35,11 +36,17 @@ export interface PhoneCallAction {
   isOutgoing: boolean;
   isVideo?: boolean;
   duration?: number;
-  reason?: 'missed' | 'disconnect' | 'hangup' | 'busy';
+  reason?: "missed" | "disconnect" | "hangup" | "busy";
 }
 
 export interface ApiPhoneCall {
-  state?: 'active' | 'waiting' | 'discarded' | 'requested' | 'accepted' | 'requesting';
+  state?:
+    | "active"
+    | "waiting"
+    | "discarded"
+    | "requested"
+    | "accepted"
+    | "requesting";
   isConnected?: boolean;
   id: string;
   accessHash?: string;
@@ -55,7 +62,7 @@ export interface ApiPhoneCall {
   protocol?: ApiCallProtocol;
   needRating?: boolean;
   needDebug?: boolean;
-  reason?: 'missed' | 'disconnect' | 'hangup' | 'busy';
+  reason?: "missed" | "disconnect" | "hangup" | "busy";
   duration?: number;
 
   emojis?: string;

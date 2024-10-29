@@ -1,6 +1,10 @@
-import type { ApiLimitType, ApiPremiumSection, CallbackAction } from '../../global/types';
-import type { ApiDocument, ApiPhoto, ApiReaction } from './messages';
-import type { ApiUser } from './users';
+import {
+  ApiLimitType,
+  ApiPremiumSection,
+  CallbackAction,
+} from "../../../telegram-tt/src/global/types";
+import type { ApiDocument, ApiPhoto, ApiReaction } from "./messages";
+import type { ApiUser } from "./users";
 
 export interface ApiInitialArgs {
   userAgent: string;
@@ -21,7 +25,8 @@ export interface ApiInitialArgs {
 export interface ApiOnProgress {
   (
     progress: number, // Float between 0 and 1.
-    ...args: any[]
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    ...args: unknown[]
   ): void;
 
   isCanceled?: boolean;
@@ -111,6 +116,7 @@ export type ApiNotification = {
   title?: string;
   message: string;
   actionText?: string;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   action?: CallbackAction | CallbackAction[];
   className?: string;
   duration?: number;
@@ -222,13 +228,14 @@ export interface ApiConfig {
 export type ApiPeerColorSet = string[];
 
 export interface ApiPeerColors {
-  general: {
-    [key: number]: {
+  general: Record<
+    number,
+    {
       isHidden?: true;
       colors?: ApiPeerColorSet;
       darkColors?: ApiPeerColorSet;
-    };
-  };
+    }
+  >;
   generalHash?: number;
 }
 
@@ -251,22 +258,25 @@ export interface ApiEmojiInteraction {
 }
 
 type ApiUrlAuthResultRequest = {
-  type: 'request';
+  type: "request";
   bot: ApiUser;
   domain: string;
   shouldRequestWriteAccess?: boolean;
 };
 
 type ApiUrlAuthResultAccepted = {
-  type: 'accepted';
+  type: "accepted";
   url: string;
 };
 
 type ApiUrlAuthResultDefault = {
-  type: 'default';
+  type: "default";
 };
 
-export type ApiUrlAuthResult = ApiUrlAuthResultRequest | ApiUrlAuthResultAccepted | ApiUrlAuthResultDefault;
+export type ApiUrlAuthResult =
+  | ApiUrlAuthResultRequest
+  | ApiUrlAuthResultAccepted
+  | ApiUrlAuthResultDefault;
 
 export interface ApiCollectionInfo {
   amount: number;
@@ -276,3 +286,8 @@ export interface ApiCollectionInfo {
   purchaseDate: number;
   url: string;
 }
+
+export type Undefined<T> = {
+  [K in keyof T]: undefined;
+};
+export type OptionalCombine<A, B> = (A & B) | (A & Undefined<B>);

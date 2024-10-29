@@ -1,1 +1,19 @@
-{}
+{
+  "AppSidebar": {
+    "Dashboard": "Главная",
+    "Tasks": "Задачи",
+    "Notifications": "Уведомления",
+    "Batch send": "Рассылки",
+    "Workspace": "Проект",
+    "Workspaces list": "Список проектов",
+    "Create new": "Создать проект",
+    "Actions": "Действия",
+    "Toggle Telegram": "Переключить Telegram",
+    "Pipeline": "Воронка",
+    "Team": "Команда",
+    "Settings": "Настройки",
+    "Logout": "Выйти",
+    "Switch language": "Переключить язык",
+    "Sync Chats": "Синк чатов"
+  }
+}

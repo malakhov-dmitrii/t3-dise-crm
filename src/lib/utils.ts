@@ -33,11 +33,9 @@ export function throttle<F extends AnyToVoidFunction>(
         fn(...args);
       }
 
-      // eslint-disable-next-line no-restricted-globals
       interval = self.setInterval(() => {
         if (!isPending) {
-          // eslint-disable-next-line no-restricted-globals
-          self.clearInterval(interval!);
+          self.clearInterval(interval);
           interval = undefined;
           return;
         }
@@ -70,4 +68,5 @@ export function throttleWith<F extends AnyToVoidFunction>(
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyToVoidFunction = (...args: any[]) => void;

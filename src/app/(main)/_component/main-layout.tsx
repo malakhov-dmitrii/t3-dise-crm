@@ -6,7 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useIframeOpen } from "@/services";
 import CreateWorkspaceDialog from "@/components/dialogs/create-workspace-dialog";
 import SelectWorkspaceDialog from "@/components/dialogs/select-workspace-dialog";
-import SyncFoldersDialog from "@/components/dialogs/sync-folders-dialog";
+import SyncFoldersDialog from "@/components/dialogs/sync-folders-dialog/sync-folders-dialog";
 import TeamInvitesDialog from "@/components/dialogs/team-invites-dialog";
 import useOnboarding from "@/hooks/useOnboarding";
 import { atomWithStorage } from "jotai/utils";

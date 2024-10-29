@@ -1,1 +1,19 @@
-{}
+{
+  "AppSidebar": {
+    "Dashboard": "Dashboard",
+    "Tasks": "Tasks",
+    "Notifications": "Notifications",
+    "Batch send": "Batch send",
+    "Workspace": "Workspace",
+    "Workspaces list": "Workspaces list",
+    "Create new": "Create new",
+    "Actions": "Actions",
+    "Toggle Telegram": "Toggle Telegram",
+    "Pipeline": "Pipeline",
+    "Settings": "Settings",
+    "Logout": "Logout",
+    "Switch language": "Switch language",
+    "Sync Chats": "Sync Chats",
+    "Team": "Team"
+  }
+}

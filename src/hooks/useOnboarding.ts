@@ -2,7 +2,7 @@
 
 import { useCreateWorkspaceDialogOpen } from "@/components/dialogs/create-workspace-dialog";
 import { useSelectWorkspaceDialogOpen } from "@/components/dialogs/select-workspace-dialog";
-import { useSyncFoldersDialogOpen } from "@/components/dialogs/sync-folders-dialog";
+import { useSyncFoldersDialogOpen } from "@/components/dialogs/sync-folders-dialog/sync-folders-dialog";
 import { useTeamInvitesDialogOpen } from "@/components/dialogs/team-invites-dialog";
 import { api } from "@/trpc/react";
 import { usePathname, useRouter } from "next/navigation";

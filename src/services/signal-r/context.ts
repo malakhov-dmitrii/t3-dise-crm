@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 "use client";
 
 import { HubConnectionState } from "@microsoft/signalr";
@@ -16,9 +19,9 @@ function createSignalRContext<T extends Hub>(options?: {
   const events: T["callbacksName"][] = [];
   const context: Context<T> = {
     connection: null,
-    useSignalREffect: null as any, // Assigned after context
-    shareConnectionBetweenTab: options?.shareConnectionBetweenTab || false,
-    invoke: (methodName: string, ...args: any[]) => {
+    useSignalREffect: null as never, // Assigned after context
+    shareConnectionBetweenTab: options?.shareConnectionBetweenTab ?? false,
+    invoke: (methodName: string, ...args: unknown[]) => {
       const SIGNAL_R_RESPONSE = uuid();
       sendWithHermes(
         SIGNAL_R_INVOKE,
@@ -31,10 +34,10 @@ function createSignalRContext<T extends Hub>(options?: {
         });
       });
     },
-    Provider: null as any, // just for ts ignore
+    Provider: null as never, // just for ts ignore
     on: (event: string) => {
       if (!events.includes(event)) {
-        context.connection?.on(event, (...message: any) => {
+        context.connection?.on(event, (...message: unknown[]) => {
           sendWithHermes(event, message, context.shareConnectionBetweenTab);
         });
       }
@@ -54,20 +57,21 @@ function createSignalRContext<T extends Hub>(options?: {
       const uniqueEvents = removeDuplicates(events);
 
       uniqueEvents.forEach((event) => {
-        context.connection?.on(event, (...message: any) => {
+        context.connection?.on(event, (...message: unknown[]) => {
           sendWithHermes(event, message, context.shareConnectionBetweenTab);
         });
       });
     },
   };
 
+  // @ts-expect-error ignore
   context.Provider = context.shareConnectionBetweenTab
     ? providerFactory(context)
     : providerNativeFactory(context);
 
   async function invoke(data: {
     methodName: string;
-    args: any[];
+    args: unknown[];
     callbackResponse: string;
   }) {
     try {
@@ -89,7 +93,7 @@ function createSignalRContext<T extends Hub>(options?: {
 
   hermes.on(SIGNAL_R_INVOKE, (data) => {
     if (context.connection?.state === HubConnectionState.Connected) {
-      invoke(data);
+      void invoke(data);
     }
   });
 

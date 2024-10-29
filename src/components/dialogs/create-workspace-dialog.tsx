@@ -31,6 +31,8 @@ const CreateWorkspaceDialog = () => {
   const [isOpen, setIsOpen] = useCreateWorkspaceDialogOpen();
   const [workspaceName, setWorkspaceName] = useState("");
 
+  const { data: workspaces } = api.workspaces.listWorkspaces.useQuery();
+
   const { mutate: createWorkspace, isPending } =
     api.workspaces.createWorkspace.useMutation({
       onSuccess: (data) => {
@@ -58,8 +60,13 @@ const CreateWorkspaceDialog = () => {
   };
 
   return (
-    <Dialog open={isOpen}>
-      <DialogContent hideCloseButton>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        return workspaces?.length === 0 ? undefined : setIsOpen(open);
+      }}
+    >
+      <DialogContent hideCloseButton={workspaces?.length === 0}>
         <DialogHeader>
           <DialogTitle>Create workspace</DialogTitle>
           <DialogDescription>
@@ -72,7 +79,7 @@ const CreateWorkspaceDialog = () => {
         <form onSubmit={handleSubmit}>
           <Label htmlFor="picture">Thumbnail</Label>
 
-          <div className="flex items-start gap-4">
+          <div className="mt-2 flex items-start gap-4">
             <div className="flex h-20 min-w-20 items-center justify-center rounded-md border border-dashed">
               <Upload className="h-4 w-4" />
             </div>

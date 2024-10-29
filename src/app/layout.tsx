@@ -14,6 +14,7 @@ import { GlobalProviders } from "@/components/utils/global-providers";
 import { getServerAuthSession } from "@/server/auth";
 import { HydrateClient } from "@/trpc/server";
 import { ThemeProvider } from "@/components/utils/theme-provider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default async function RootLayout({
                 <HydrateClient>
                   <GlobalProviders session={session}>
                     {children}
+                    <ReactQueryDevtools />
                   </GlobalProviders>
                 </HydrateClient>
               </TelegramWindowProvider>

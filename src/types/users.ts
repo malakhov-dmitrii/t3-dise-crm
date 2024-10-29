@@ -1,8 +1,13 @@
-import type { API_CHAT_TYPES } from '../../config';
-import type { ApiBotInfo } from './bots';
-import type { ApiBusinessIntro, ApiBusinessLocation, ApiBusinessWorkHours } from './business';
-import type { ApiPeerColor } from './chats';
-import type { ApiDocument, ApiPhoto } from './messages';
+import { API_CHAT_TYPES } from "../../../telegram-tt/src/config";
+import type { ApiBotInfo } from "./bots";
+import type {
+  ApiBusinessIntro,
+  ApiBusinessLocation,
+  ApiBusinessWorkHours,
+} from "./business";
+import type { ApiPeerColor } from "./chats";
+import type { ApiDocument, ApiPhoto } from "./messages";
+import { OptionalCombine } from "./misc";
 
 export interface ApiUser {
   id: string;
@@ -64,15 +69,22 @@ export interface ApiUserFullInfo {
   businessIntro?: ApiBusinessIntro;
 }
 
-export type ApiFakeType = 'fake' | 'scam';
+export type ApiFakeType = "fake" | "scam";
 
-export type ApiUserType = 'userTypeBot' | 'userTypeRegular' | 'userTypeDeleted' | 'userTypeUnknown';
+export type ApiUserType =
+  | "userTypeBot"
+  | "userTypeRegular"
+  | "userTypeDeleted"
+  | "userTypeUnknown";
 
 export interface ApiUserStatus {
-  type: (
-    'userStatusEmpty' | 'userStatusLastMonth' | 'userStatusLastWeek' |
-    'userStatusOffline' | 'userStatusOnline' | 'userStatusRecently'
-  );
+  type:
+    | "userStatusEmpty"
+    | "userStatusLastMonth"
+    | "userStatusLastWeek"
+    | "userStatusOffline"
+    | "userStatusOnline"
+    | "userStatusRecently";
   wasOnline?: number;
   expires?: number;
   isReadDateRestrictedByMe?: boolean;
@@ -85,8 +97,8 @@ export interface ApiUsername {
   isEditable?: boolean;
 }
 
-export type ApiChatType = typeof API_CHAT_TYPES[number];
-export type ApiAttachMenuPeerType = 'self' | ApiChatType;
+export type ApiChatType = (typeof API_CHAT_TYPES)[number];
+export type ApiAttachMenuPeerType = "self" | ApiChatType;
 
 type ApiAttachBotForMenu = {
   isForAttachMenu: true;
@@ -103,7 +115,10 @@ type ApiAttachBotBase = {
   isInactive?: boolean;
 };
 
-export type ApiAttachBot = OptionalCombine<ApiAttachBotBase, ApiAttachBotForMenu>;
+export type ApiAttachBot = OptionalCombine<
+  ApiAttachBotBase,
+  ApiAttachBotForMenu
+>;
 
 export interface ApiAttachBotIcon {
   name: string;

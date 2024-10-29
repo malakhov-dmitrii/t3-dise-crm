@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
 
-    session: ({ token, session, user }) => {
+    session: ({ token }) => {
       return {
         id: token.id as string,
         telegramUserId: token.telegramUserId as number,
@@ -107,6 +107,10 @@ export const authOptions: NextAuthOptions = {
         const user = await upsertUser(+telegramUserId);
 
         if (!user) return null;
+
+        await db
+          .delete(verificationTokens)
+          .where(eq(verificationTokens.token, otp));
 
         return {
           id: user.id,

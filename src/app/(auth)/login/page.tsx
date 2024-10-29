@@ -20,7 +20,7 @@ import useLogout from "@/hooks/use-logout";
 
 const BOT_USERNAME = "task_extractor_bot";
 
-export const errorMessages = {
+const errorMessages = {
   Configuration:
     "There is a problem with the server configuration. Check if your options are correct.",
   AccessDenied:
