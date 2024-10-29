@@ -5,7 +5,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
@@ -15,6 +15,9 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import { and, eq } from "drizzle-orm";
+import dayjs from "dayjs";
+import { Maybe } from "@trpc/server/unstable-core-do-not-import";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -24,11 +27,15 @@ import {
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+    id: string;
+    telegramUserId: number;
+    firstName: string;
+    lastName: string;
+    email: Maybe<string>;
+    // ...other properties
+    // role: UserRole;
+    expires: Date;
+    user: DefaultSession["user"];
   }
 
   // interface User {
@@ -44,13 +51,20 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    jwt: ({ token, user }) => {
+      return { ...token, ...user };
+    },
+    session: ({ token }) => {
+      return {
+        id: token.id as string,
+        telegramUserId: token.telegramUserId as number,
+        firstName: token.firstName as string,
+        lastName: token.lastName as string,
+        email: null,
+        expires: new Date(token.exp as number),
+        user: undefined,
+      };
+    },
   },
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -59,10 +73,48 @@ export const authOptions: NextAuthOptions = {
     verificationTokensTable: verificationTokens,
   }) as Adapter,
   providers: [
-    DiscordProvider({
-      // clientId: env.DISCORD_CLIENT_ID,
-      // clientSecret: env.DISCORD_CLIENT_SECRET,
+    CredentialsProvider({
+      name: "Telegram OTP",
+      id: "telegram-otp",
+      credentials: {
+        otp: { label: "OTP", type: "text" },
+        telegramUserId: { label: "Telegram User ID", type: "number" },
+      },
+      authorize: async (credentials) => {
+        const { otp, telegramUserId } = credentials ?? {};
+        if (!otp || !telegramUserId) return null;
+
+        const code = await db.query.verificationTokens.findFirst({
+          where: and(
+            eq(verificationTokens.token, otp),
+            eq(verificationTokens.identifier, telegramUserId.toString()),
+          ),
+        });
+
+        console.log("Code found", code);
+
+        if (!code) return null;
+        if (!code.verified) return null;
+
+        const codeExpires = dayjs(code.expires);
+        if (codeExpires.isBefore(dayjs())) return null;
+
+        console.log("Code is valid, upserting user");
+
+        const user = await upsertUser(+telegramUserId);
+
+        if (!user) return null;
+
+        return {
+          id: user.id,
+          telegramUserId: user.telegramUserId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        };
+      },
+      type: "credentials",
     }),
+
     /**
      * ...add more providers here.
      *
@@ -73,6 +125,15 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+
+  session: { strategy: "jwt" },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+    verifyRequest: "/login",
+    signOut: "/login",
+    newUser: "/",
+  },
 };
 
 /**
@@ -81,3 +142,18 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
+
+const upsertUser = async (telegramUserId: number) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.telegramUserId, telegramUserId.toString()),
+  });
+
+  if (user) return user;
+
+  return (
+    await db
+      .insert(users)
+      .values({ telegramUserId: telegramUserId.toString(), email: "" })
+      .returning()
+  )[0];
+};

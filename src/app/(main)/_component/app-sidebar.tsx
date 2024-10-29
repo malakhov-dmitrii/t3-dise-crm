@@ -7,24 +7,16 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { toast } from "@/hooks/use-toast";
-import {
-  useIframeOpen,
-  useTelegram,
-  useTgConnected,
-  useTgUserId,
-} from "@/services";
+import { useIframeOpen } from "@/services";
 import {
   Bell,
-  Calendar,
+  Kanban,
   LogIn,
   LogOut,
-  Search,
   Send,
   Settings,
   ToggleLeft,
@@ -33,7 +25,7 @@ import {
 import { Inbox } from "lucide-react";
 import { Home } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import useLogout from "@/hooks/use-logout";
 
 // Menu items.
 const items = [
@@ -58,35 +50,11 @@ const items = [
     icon: Send,
     soon: true,
   },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
 ];
 
 export function AppSidebar() {
   const [iframeOpen, setIframeOpen] = useIframeOpen();
-  const [tgConnected, setTgConnected] = useTgConnected();
-  const [tgUserId, setTgUserId] = useTgUserId();
-  const tg = useTelegram();
-  const router = useRouter();
-
-  const onLogout = async () => {
-    if (!tg) {
-      toast({
-        title: "Telegram is not connected",
-        description: "Please connect Telegram to continue",
-      });
-      return;
-    }
-    await tg.actions.proxy.signOut({
-      forceInitApi: true,
-    });
-    setTgConnected(false);
-    setTgUserId(undefined);
-    void router.push("/login");
-  };
+  const logout = useLogout();
 
   return (
     <Sidebar collapsible="icon">
@@ -126,19 +94,30 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Kanban />
+                  <span>Pipeline</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <Settings />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild>
-            <Link href="/auth">
-              <LogIn />
-              <span>Login</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton onClick={onLogout}>
+          <SidebarMenuButton onClick={logout}>
             <LogOut />
             <span>Logout</span>
           </SidebarMenuButton>

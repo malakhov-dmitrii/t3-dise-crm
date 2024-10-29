@@ -2,12 +2,15 @@
 
 import React, { PropsWithChildren, useState, useRef, useEffect } from "react";
 import { Requester, Responder } from "jsonrpc-iframe";
-import { useInterval } from "usehooks-ts";
+import { useDebounceCallback, useInterval } from "usehooks-ts";
 import { Actions, Methods, Custom, Events } from "./types";
 import { TG_CONFIG } from "./config";
 import { cn } from "@/lib/utils";
 import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 export type TelegramWindowContextType = {
   actions: Requester<Actions>;
   methods: Requester<Methods>;
@@ -70,6 +73,7 @@ export const TelegramWindowContext = React.createContext<
 export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const router = useRouter();
   const [tgConnected, setTgConnected] = useTgConnected();
   const [tgUserId, setTgUserId] = useTgUserId();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -109,6 +113,8 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
     tgConnected ? null : 1000,
   );
 
+  const debouncedToast = useDebounceCallback(toast.success, 1000);
+
   useEffect(() => {
     if (!frameReady || !args?.events) return;
 
@@ -116,23 +122,29 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
       console.log("loggedOut");
       setTgUserId(undefined);
       setTgConnected(false);
+
+      void router.push("/login");
     });
 
     const unAuth = args?.events.subscribe("authStateChanged", (state) => {
       // console.log("authStateChanged", state);
-      if (state.authed && state.userId) {
+      if (state.authed && state.userId && !tgUserId && !tgConnected) {
         setTgUserId(state.userId);
         setTgConnected(true);
         setIframeOpen(false);
+        debouncedToast("Telegram connected");
       }
     });
 
     const unSync = args?.events.subscribe("syncStateChanged", (state) => {
       console.log("syncStateChanged", state);
+      setTgConnected(state.isSynced);
     });
 
     const all = args?.events.subscribeUniversal((event, data) => {
-      console.log("NEW EVENT:", event, data);
+      if (event !== "authStateChanged" && event !== "loggedIn") {
+        console.log("NEW EVENT:", event, data);
+      }
     });
 
     return () => {
@@ -155,19 +167,15 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
           iframeClassName,
         )}
       >
-        {false ? (
-          <div>Error</div>
-        ) : (
-          <iframe
-            id="telegram-iframe"
-            height="100%"
-            width="100%"
-            allow="clipboard-read; clipboard-write"
-            ref={iframeRef}
-            onLoad={() => setFrameReady(true)}
-            src={buildTelegramIframeUrl(TG_CONFIG.TG_IFRAME_URL, "")}
-          ></iframe>
-        )}
+        <iframe
+          id="telegram-iframe"
+          height="100%"
+          width="100%"
+          allow="clipboard-read; clipboard-write"
+          ref={iframeRef}
+          onLoad={() => setFrameReady(true)}
+          src={buildTelegramIframeUrl(TG_CONFIG.TG_IFRAME_URL, "")}
+        ></iframe>
       </div>
     </TelegramWindowContext.Provider>
   );

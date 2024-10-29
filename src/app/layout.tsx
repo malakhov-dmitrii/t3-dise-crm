@@ -5,11 +5,13 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { TailwindIndicator } from "@/components/utils/tailwind-indicator";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { TelegramWindowProvider } from "@/services";
+import { GlobalProviders } from "@/components/utils/global-providers";
+import { getServerAuthSession } from "@/server/auth";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -26,6 +28,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
+  const session = await getServerAuthSession();
 
   // Providing all messages to the client
   // side is the easiest way to get started
@@ -41,9 +44,11 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <TRPCReactProvider>
-            <TelegramWindowProvider>{children}</TelegramWindowProvider>
+            <TelegramWindowProvider>
+              <GlobalProviders session={session}>{children}</GlobalProviders>
+            </TelegramWindowProvider>
           </TRPCReactProvider>
-          <Toaster />
+          <Toaster position="top-center" />
           <TailwindIndicator />
         </NextIntlClientProvider>
       </body>

@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   pgTableCreator,
@@ -17,41 +18,35 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `t3-dise-crm_${name}`);
-
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
+export const createTable = pgTableCreator((name) => name);
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
+  firstName: varchar("first_name", { length: 255 }),
+  lastName: varchar("last_name", { length: 255 }),
+  image: varchar("image", { length: 255 }),
+  telegramUserId: text("telegram_user_id"),
+  telegramUsername: varchar("telegram_username", { length: 255 }),
+  chatId: text("chat_id"),
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+
+  // NOTE: Need this for NextAuth adapter to work
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("email_verified", {
     mode: "date",
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
-  image: varchar("image", { length: 255 }),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -84,7 +79,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_user_id_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -107,7 +102,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_user_id_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -119,6 +114,7 @@ export const verificationTokens = createTable(
   {
     identifier: varchar("identifier", { length: 255 }).notNull(),
     token: varchar("token", { length: 255 }).notNull(),
+    verified: boolean("verified").notNull().default(false),
     expires: timestamp("expires", {
       mode: "date",
       withTimezone: true,
@@ -126,5 +122,5 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
