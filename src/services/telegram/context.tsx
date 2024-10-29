@@ -10,6 +10,8 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useThrottle } from "@uidotdev/usehooks";
+import useThrottledCallback from "@/hooks/useThrottledCallback";
 
 export type TelegramWindowContextType = {
   actions: Requester<Actions>;
@@ -115,6 +117,21 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
 
   const debouncedToast = useDebounceCallback(toast.success, 1000);
 
+  const throttledAuthStateChange = useThrottledCallback(
+    (state) => {
+      // console.log("authStateChanged", state);
+      console.log("AuthState", { state, tgUserId, tgConnected });
+      if (state.authed && state.userId && !tgUserId && !tgConnected) {
+        setTgUserId(state.userId);
+        setTgConnected(true);
+        setIframeOpen(false);
+        debouncedToast("Telegram connected");
+      }
+    },
+    [tgUserId, tgConnected],
+    1000,
+  );
+
   useEffect(() => {
     if (!frameReady || !args?.events) return;
 
@@ -126,32 +143,27 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
       void router.push("/login");
     });
 
-    const unAuth = args?.events.subscribe("authStateChanged", (state) => {
-      // console.log("authStateChanged", state);
-      if (state.authed && state.userId && !tgUserId && !tgConnected) {
-        setTgUserId(state.userId);
-        setTgConnected(true);
-        setIframeOpen(false);
-        debouncedToast("Telegram connected");
-      }
-    });
+    const unAuth = args?.events.subscribe(
+      "authStateChanged",
+      throttledAuthStateChange,
+    );
 
     const unSync = args?.events.subscribe("syncStateChanged", (state) => {
       console.log("syncStateChanged", state);
       setTgConnected(state.isSynced);
     });
 
-    const all = args?.events.subscribeUniversal((event, data) => {
-      if (event !== "authStateChanged" && event !== "loggedIn") {
-        console.log("NEW EVENT:", event, data);
-      }
-    });
+    // const all = args?.events.subscribeUniversal((event, data) => {
+    //   // if (event !== "authStateChanged" && event !== "loggedIn") {
+    //   console.log("NEW EVENT:", event, data);
+    //   // }
+    // });
 
     return () => {
       unLogout?.();
       unAuth?.();
       unSync?.();
-      all?.();
+      // all?.();
     };
   }, [args?.events, frameReady]);
 

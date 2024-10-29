@@ -1,1 +1,0 @@
-ALTER TABLE "verification_token" DROP COLUMN IF EXISTS "verified";

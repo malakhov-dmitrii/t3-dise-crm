@@ -5,12 +5,14 @@ import {
   integer,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { customAlphabet, nanoid } from "nanoid";
 import { type AdapterAccount } from "next-auth/adapters";
+
+const nid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 8);
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -31,6 +33,8 @@ export const users = createTable("user", {
   telegramUserId: text("telegram_user_id"),
   telegramUsername: varchar("telegram_username", { length: 255 }),
   chatId: text("chat_id"),
+
+  language: varchar("language", { length: 255 }).default("en"),
   createdAt: timestamp("created_at", {
     mode: "date",
     withTimezone: true,
@@ -51,6 +55,8 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  workspaces: many(workspaces),
+  workspaceUsers: many(workspaceUsers),
 }));
 
 export const accounts = createTable(
@@ -122,5 +128,124 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+  }),
+);
+
+/**
+ * Core tables
+ */
+
+export const workspaces = createTable("workspace", {
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => nid()),
+  name: text("name"),
+  adminId: varchar("admin_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  thumbnailUrl: text("thumbnail_url"),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
+  admin: one(users, { fields: [workspaces.adminId], references: [users.id] }),
+  workspaceUsers: many(workspaceUsers),
+  workspacePipelines: many(workspacePipelines),
+}));
+
+export const workspaceUsers = createTable("workspace_user", {
+  workspaceId: varchar("workspace_id", { length: 255 })
+    .notNull()
+    .references(() => workspaces.id),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  invitedBy: varchar("invited_by", { length: 255 }).references(() => users.id),
+  role: varchar("role", { length: 255 })
+    .$type<"admin" | "user">()
+    .default("user"),
+});
+
+export const workspaceUsersRelations = relations(workspaceUsers, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [workspaceUsers.workspaceId],
+    references: [workspaces.id],
+  }),
+  user: one(users, { fields: [workspaceUsers.userId], references: [users.id] }),
+}));
+
+export const workspacePipelines = createTable("workspace_pipeline", {
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  workspaceId: varchar("workspace_id", { length: 255 })
+    .notNull()
+    .references(() => workspaces.id),
+  name: text("name"),
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const workspacePipelinesRelations = relations(
+  workspacePipelines,
+  ({ one, many }) => ({
+    workspace: one(workspaces, {
+      fields: [workspacePipelines.workspaceId],
+      references: [workspaces.id],
+    }),
+    workspacePipelineStages: many(workspacePipelineStages),
+  }),
+);
+
+export const workspacePipelineStages = createTable("workspace_pipeline_stage", {
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  workspacePipelineId: varchar("workspace_pipeline_id", { length: 255 })
+    .notNull()
+    .references(() => workspacePipelines.id),
+
+  name: text("name"),
+  order: integer("order").default(0),
+  color: varchar("color", { length: 255 }),
+
+  closedWon: boolean("closed_won").default(false),
+  closedLost: boolean("closed_lost").default(false),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const workspacePipelineStagesRelations = relations(
+  workspacePipelineStages,
+  ({ one }) => ({
+    workspacePipeline: one(workspacePipelines, {
+      fields: [workspacePipelineStages.workspacePipelineId],
+      references: [workspacePipelines.id],
+    }),
   }),
 );

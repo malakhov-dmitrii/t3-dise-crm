@@ -118,11 +118,11 @@ export default function AuthPage({
           >
             Connect Telegram
           </Button>
-          {tgConnected && !!tgUserId && (
-            <Button variant="outline" className="w-10" onClick={logout}>
-              <ReloadIcon className="h-4 w-4" />
-            </Button>
-          )}
+          {/* {tgConnected && !!tgUserId && (
+            )} */}
+          <Button variant="outline" className="w-10" onClick={logout}>
+            <ReloadIcon className="h-4 w-4" />
+          </Button>
         </div>
 
         <div className="mt-2 flex items-center gap-2">

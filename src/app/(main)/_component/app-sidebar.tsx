@@ -14,9 +14,11 @@ import {
 import { useIframeOpen } from "@/services";
 import {
   Bell,
+  ChevronDown,
   Kanban,
   LogIn,
   LogOut,
+  Plus,
   Send,
   Settings,
   ToggleLeft,
@@ -26,6 +28,19 @@ import { Inbox } from "lucide-react";
 import { Home } from "lucide-react";
 import Link from "next/link";
 import useLogout from "@/hooks/use-logout";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { api } from "@/trpc/react";
+import { useLastWorkspaceId } from "./main-layout";
+import { useCreateWorkspaceDialogOpen } from "@/components/dialogs/create-workspace-dialog";
+import { PlusCircledIcon, PlusIcon } from "@radix-ui/react-icons";
+import { ThemeToggle } from "@/components/utils/theme-toggle";
 
 // Menu items.
 const items = [
@@ -53,14 +68,55 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const [isOpen, setIsOpen] = useCreateWorkspaceDialogOpen();
   const [iframeOpen, setIframeOpen] = useIframeOpen();
   const logout = useLogout();
+  const [lastWorkspaceId] = useLastWorkspaceId();
+  const { data: workspaces, isLoading } =
+    api.workspaces.listWorkspaces.useQuery();
+
+  const currentWorkspace = workspaces?.find(
+    (workspace) => workspace.id === lastWorkspaceId,
+  );
 
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main Workspace</SidebarGroupLabel>
+          <DropdownMenu>
+            <DropdownMenuTrigger disabled={isLoading}>
+              <SidebarGroupLabel>
+                Workspace: {currentWorkspace?.name ?? "..."} <ChevronDown />
+              </SidebarGroupLabel>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel className="text-xs">
+                Workspaces list
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {workspaces?.map((workspace) => (
+                <DropdownMenuItem
+                  key={workspace.id}
+                  className="text-xs"
+                  disabled={workspace.id === lastWorkspaceId}
+                  asChild
+                >
+                  <Link href={`/${workspace.id}`} className="flex items-center">
+                    <div className="h-3 w-3 rounded-sm bg-slate-500"></div>
+                    <p>{workspace.name}</p>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="gap-1 text-xs"
+                onClick={() => setIsOpen(true)}
+              >
+                <PlusIcon className="h-1 w-1" />
+                <p>Create new</p>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -113,9 +169,19 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem className="ml-2">
+                <ThemeToggle />
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarMenuItem></SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton onClick={logout}>
             <LogOut />

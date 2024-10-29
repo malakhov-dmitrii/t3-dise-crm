@@ -164,6 +164,7 @@ async function checkChatId(ctx: Context) {
       telegramUserId: userId.toString(),
       chatId: chatId.toString(),
       telegramUsername: ctx.from.username,
+      language: ctx.from.language_code ?? "en",
     });
   } else {
     if (user.chatId !== chatId.toString()) {

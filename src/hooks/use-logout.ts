@@ -1,8 +1,11 @@
-import { useTelegram } from "@/services";
+import { useTelegram, useTgConnected, useTgUserId } from "@/services";
+import { signOut } from "next-auth/react";
 import { toast } from "sonner";
 
 const useLogout = () => {
   const tg = useTelegram();
+  const [, setTgUserId] = useTgUserId();
+  const [, setTgConnected] = useTgConnected();
 
   return async () => {
     if (!tg) {
@@ -12,9 +15,14 @@ const useLogout = () => {
       return;
     }
 
+    setTgUserId(undefined);
+    setTgConnected(false);
+
     await tg.actions.proxy.signOut({
       forceInitApi: true,
     });
+
+    await signOut();
   };
 };
 

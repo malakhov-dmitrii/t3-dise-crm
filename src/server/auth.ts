@@ -32,6 +32,7 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     email: Maybe<string>;
+    language: string;
     // ...other properties
     // role: UserRole;
     expires: Date;
@@ -54,7 +55,8 @@ export const authOptions: NextAuthOptions = {
     jwt: ({ token, user }) => {
       return { ...token, ...user };
     },
-    session: ({ token }) => {
+
+    session: ({ token, session, user }) => {
       return {
         id: token.id as string,
         telegramUserId: token.telegramUserId as number,
@@ -63,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         email: null,
         expires: new Date(token.exp as number),
         user: undefined,
+        language: token.language as string,
       };
     },
   },
@@ -110,6 +113,7 @@ export const authOptions: NextAuthOptions = {
           telegramUserId: user.telegramUserId,
           firstName: user.firstName,
           lastName: user.lastName,
+          language: user.language,
         };
       },
       type: "credentials",

@@ -1,10 +1,16 @@
+import { getServerAuthSession } from "@/server/auth";
 import { type Formats } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 
+const locales = ["en", "ru"];
+
 export default getRequestConfig(async () => {
+  const session = await getServerAuthSession();
+  console.log({ session });
   // Provide a static locale, fetch a user setting,
   // read from `cookies()`, `headers()`, etc.
-  const locale = "en";
+  const l = session?.language ?? "en";
+  const locale = locales.includes(l) ? l : "en";
 
   return {
     locale,

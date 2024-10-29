@@ -1,1 +1,0 @@
-ALTER TABLE "verification_token" ADD COLUMN "verified" boolean DEFAULT false NOT NULL;

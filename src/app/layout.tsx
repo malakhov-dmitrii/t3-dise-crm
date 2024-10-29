@@ -12,6 +12,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { TelegramWindowProvider } from "@/services";
 import { GlobalProviders } from "@/components/utils/global-providers";
 import { getServerAuthSession } from "@/server/auth";
+import { HydrateClient } from "@/trpc/server";
+import { ThemeProvider } from "@/components/utils/theme-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -44,9 +46,15 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <TRPCReactProvider>
-            <TelegramWindowProvider>
-              <GlobalProviders session={session}>{children}</GlobalProviders>
-            </TelegramWindowProvider>
+            <ThemeProvider attribute="class" defaultTheme="system">
+              <TelegramWindowProvider>
+                <HydrateClient>
+                  <GlobalProviders session={session}>
+                    {children}
+                  </GlobalProviders>
+                </HydrateClient>
+              </TelegramWindowProvider>
+            </ThemeProvider>
           </TRPCReactProvider>
           <Toaster position="top-center" />
           <TailwindIndicator />
