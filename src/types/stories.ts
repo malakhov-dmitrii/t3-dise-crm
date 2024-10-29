@@ -1,10 +1,16 @@
-import type { ApiPrivacySettings } from '../../types';
+import { ApiPrivacySettings } from "../../../telegram-tt/src/types";
 import type {
-  ApiGeoPoint, ApiMessage, ApiReaction, ApiReactionCount, ApiSticker, ApiStoryForwardInfo, MediaContent,
-} from './messages';
+  ApiGeoPoint,
+  ApiMessage,
+  ApiReaction,
+  ApiReactionCount,
+  ApiSticker,
+  ApiStoryForwardInfo,
+  MediaContent,
+} from "./messages";
 
 export interface ApiStory {
-  '@type'?: 'story';
+  "@type"?: "story";
   id: number;
   peerId: string;
   date: number;
@@ -36,7 +42,7 @@ export interface ApiStoryViews {
 }
 
 export interface ApiStorySkipped {
-  '@type'?: 'storySkipped';
+  "@type"?: "storySkipped";
   id: number;
   peerId: string;
   isForCloseFriends?: boolean;
@@ -45,7 +51,7 @@ export interface ApiStorySkipped {
 }
 
 export interface ApiStoryDeleted {
-  '@type'?: 'storyDeleted';
+  "@type"?: "storyDeleted";
   id: number;
   peerId: string;
   isDeleted: true;
@@ -80,7 +86,7 @@ export type ApiWebPageStickerData = {
 };
 
 export type ApiStoryViewPublicForward = {
-  type: 'forward';
+  type: "forward";
   peerId: string;
   messageId: number;
   message: ApiMessage;
@@ -90,7 +96,7 @@ export type ApiStoryViewPublicForward = {
 };
 
 export type ApiStoryViewPublicRepost = {
-  type: 'repost';
+  type: "repost";
   isUserBlocked?: true;
   areStoriesBlocked?: true;
   date: number;
@@ -100,7 +106,7 @@ export type ApiStoryViewPublicRepost = {
 };
 
 export type ApiStoryView = {
-  type: 'user';
+  type: "user";
   peerId: string;
   date: number;
   reaction?: ApiReaction;
@@ -108,7 +114,10 @@ export type ApiStoryView = {
   areStoriesBlocked?: true;
 };
 
-export type ApiTypeStoryView = ApiStoryView | ApiStoryViewPublicForward | ApiStoryViewPublicRepost;
+export type ApiTypeStoryView =
+  | ApiStoryView
+  | ApiStoryViewPublicForward
+  | ApiStoryViewPublicRepost;
 
 export type ApiStealthMode = {
   activeUntil?: number;
@@ -124,20 +133,20 @@ export type ApiMediaAreaCoordinates = {
 };
 
 export type ApiMediaAreaVenue = {
-  type: 'venue';
+  type: "venue";
   coordinates: ApiMediaAreaCoordinates;
   geo: ApiGeoPoint;
   title: string;
 };
 
 export type ApiMediaAreaGeoPoint = {
-  type: 'geoPoint';
+  type: "geoPoint";
   coordinates: ApiMediaAreaCoordinates;
   geo: ApiGeoPoint;
 };
 
 export type ApiMediaAreaSuggestedReaction = {
-  type: 'suggestedReaction';
+  type: "suggestedReaction";
   coordinates: ApiMediaAreaCoordinates;
   reaction: ApiReaction;
   isDark?: boolean;
@@ -145,11 +154,14 @@ export type ApiMediaAreaSuggestedReaction = {
 };
 
 export type ApiMediaAreaChannelPost = {
-  type: 'channelPost';
+  type: "channelPost";
   coordinates: ApiMediaAreaCoordinates;
   channelId: string;
   messageId: number;
 };
 
-export type ApiMediaArea = ApiMediaAreaVenue | ApiMediaAreaGeoPoint | ApiMediaAreaSuggestedReaction
-| ApiMediaAreaChannelPost;
+export type ApiMediaArea =
+  | ApiMediaAreaVenue
+  | ApiMediaAreaGeoPoint
+  | ApiMediaAreaSuggestedReaction
+  | ApiMediaAreaChannelPost;

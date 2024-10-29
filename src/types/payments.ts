@@ -1,10 +1,17 @@
-import type { ApiPremiumSection } from '../../global/types';
-import type { ApiInvoiceContainer } from '../../types';
-import type { ApiWebDocument } from './bots';
-import type { ApiChat } from './chats';
-import type { ApiDocument, ApiMessageEntity, ApiPaymentCredentials } from './messages';
-import type { PrepaidGiveaway, StatisticsOverviewPercentage } from './statistics';
-import type { ApiUser } from './users';
+import { ApiPremiumSection } from "../../../telegram-tt/src/global/types";
+import { ApiInvoiceContainer } from "../../../telegram-tt/src/types";
+import type { ApiWebDocument } from "./bots";
+import type { ApiChat } from "./chats";
+import type {
+  ApiDocument,
+  ApiMessageEntity,
+  ApiPaymentCredentials,
+} from "./messages";
+import type {
+  PrepaidGiveaway,
+  StatisticsOverviewPercentage,
+} from "./statistics";
+import type { ApiUser } from "./users";
 
 export interface ApiShippingAddress {
   streetLine1: string;
@@ -84,7 +91,7 @@ export interface ApiPremiumSubscriptionOption {
 }
 
 export type ApiInputStorePaymentGiveaway = {
-  type: 'giveaway';
+  type: "giveaway";
   isOnlyForNewSubscribers?: boolean;
   areWinnersVisible?: boolean;
   chat: ApiChat;
@@ -97,14 +104,16 @@ export type ApiInputStorePaymentGiveaway = {
 };
 
 export type ApiInputStorePaymentGiftcode = {
-  type: 'giftcode';
+  type: "giftcode";
   users: ApiUser[];
   boostChannel?: ApiChat;
   currency: string;
   amount: number;
 };
 
-export type ApiInputStorePaymentPurpose = ApiInputStorePaymentGiveaway | ApiInputStorePaymentGiftcode;
+export type ApiInputStorePaymentPurpose =
+  | ApiInputStorePaymentGiveaway
+  | ApiInputStorePaymentGiftcode;
 
 export interface ApiPremiumGiftCodeOption {
   users: number;
@@ -141,7 +150,7 @@ export type ApiBoost = {
 };
 
 export type ApiGiveawayInfoActive = {
-  type: 'active';
+  type: "active";
   isParticipating?: true;
   isPreparingResults?: true;
   startDate: number;
@@ -151,7 +160,7 @@ export type ApiGiveawayInfoActive = {
 };
 
 export type ApiGiveawayInfoResults = {
-  type: 'results';
+  type: "results";
   isWinner?: true;
   isRefunded?: true;
   startDate: number;

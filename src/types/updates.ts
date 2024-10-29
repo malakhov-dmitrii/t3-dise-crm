@@ -1,23 +1,25 @@
-import type { ApiDraft } from '../../global/types';
-import type {
+import { ApiDraft } from "../../../telegram-tt/src/global/types";
+import {
   GroupCallConnectionData,
   GroupCallConnectionState,
   GroupCallParticipant,
   VideoRotation,
   VideoState,
-} from '../../lib/secret-sauce';
-import type { ApiPrivacyKey, PrivacyVisibility, ThreadId } from '../../types';
-import type { ApiBotMenuButton } from './bots';
-import type {
-  ApiGroupCall, ApiPhoneCall,
-} from './calls';
+} from "../../../telegram-tt/src/lib/secret-sauce";
+import {
+  ApiPrivacyKey,
+  PrivacyVisibility,
+  ThreadId,
+} from "../../../telegram-tt/src/types";
+import type { ApiBotMenuButton } from "./bots";
+import type { ApiGroupCall, ApiPhoneCall } from "./calls";
 import type {
   ApiChat,
   ApiChatFolder,
   ApiChatFullInfo,
   ApiChatMember,
   ApiTypingStatus,
-} from './chats';
+} from "./chats";
 import type {
   ApiFormattedText,
   ApiMessage,
@@ -30,39 +32,44 @@ import type {
   ApiStickerSet,
   ApiThreadInfo,
   MediaContent,
-} from './messages';
+} from "./messages";
 import type {
-  ApiEmojiInteraction, ApiError, ApiInviteInfo, ApiNotifyException, ApiSessionData,
-} from './misc';
-import type { ApiStealthMode, ApiStory, ApiStorySkipped } from './stories';
+  ApiEmojiInteraction,
+  ApiError,
+  ApiInviteInfo,
+  ApiNotifyException,
+  ApiSessionData,
+} from "./misc";
+import type { ApiStealthMode, ApiStory, ApiStorySkipped } from "./stories";
 import type {
-  ApiEmojiStatus, ApiUser, ApiUserFullInfo, ApiUserStatus,
-} from './users';
+  ApiEmojiStatus,
+  ApiUser,
+  ApiUserFullInfo,
+  ApiUserStatus,
+} from "./users";
 
 export type ApiUpdateReady = {
-  '@type': 'updateApiReady';
+  "@type": "updateApiReady";
 };
 
-export type ApiUpdateAuthorizationStateType = (
-  'authorizationStateLoggingOut' |
-  'authorizationStateWaitPhoneNumber' |
-  'authorizationStateWaitCode' |
-  'authorizationStateWaitPassword' |
-  'authorizationStateWaitRegistration' |
-  'authorizationStateReady' |
-  'authorizationStateClosing' |
-  'authorizationStateClosed' |
-  'authorizationStateWaitQrCode'
-);
+export type ApiUpdateAuthorizationStateType =
+  | "authorizationStateLoggingOut"
+  | "authorizationStateWaitPhoneNumber"
+  | "authorizationStateWaitCode"
+  | "authorizationStateWaitPassword"
+  | "authorizationStateWaitRegistration"
+  | "authorizationStateReady"
+  | "authorizationStateClosing"
+  | "authorizationStateClosed"
+  | "authorizationStateWaitQrCode";
 
-export type ApiUpdateConnectionStateType = (
-  'connectionStateConnecting' |
-  'connectionStateReady' |
-  'connectionStateBroken'
-);
+export type ApiUpdateConnectionStateType =
+  | "connectionStateConnecting"
+  | "connectionStateReady"
+  | "connectionStateBroken";
 
 export type ApiUpdateAuthorizationState = {
-  '@type': 'updateAuthorizationState';
+  "@type": "updateAuthorizationState";
   authorizationState: ApiUpdateAuthorizationStateType;
   isCodeViaApp?: boolean;
   hint?: string;
@@ -71,32 +78,32 @@ export type ApiUpdateAuthorizationState = {
 };
 
 export type ApiUpdateWebAuthTokenFailed = {
-  '@type': 'updateWebAuthTokenFailed';
+  "@type": "updateWebAuthTokenFailed";
 };
 
 export type ApiUpdateSession = {
-  '@type': 'updateSession';
+  "@type": "updateSession";
   sessionData?: ApiSessionData;
 };
 
 export type ApiUpdateAuthorizationError = {
-  '@type': 'updateAuthorizationError';
+  "@type": "updateAuthorizationError";
   message: string;
 };
 
 export type ApiUpdateConnectionState = {
-  '@type': 'updateConnectionState';
+  "@type": "updateConnectionState";
   connectionState: ApiUpdateConnectionStateType;
 };
 
 export type ApiUpdateCurrentUser = {
-  '@type': 'updateCurrentUser';
+  "@type": "updateCurrentUser";
   currentUser: ApiUser;
   currentUserFullInfo: ApiUserFullInfo;
 };
 
 export type ApiUpdateChat = {
-  '@type': 'updateChat';
+  "@type": "updateChat";
   id: string;
   chat: Partial<ApiChat>;
   newProfilePhoto?: ApiPhoto;
@@ -104,41 +111,41 @@ export type ApiUpdateChat = {
 };
 
 export type ApiUpdateChatLastMessage = {
-  '@type': 'updateChatLastMessage';
+  "@type": "updateChatLastMessage";
   id: string;
   lastMessage: ApiMessage;
 };
 
 export type ApiUpdateChatJoin = {
-  '@type': 'updateChatJoin';
+  "@type": "updateChatJoin";
   id: string;
 };
 
 export type ApiUpdateShowInvite = {
-  '@type': 'showInvite';
+  "@type": "showInvite";
   data: ApiInviteInfo;
 };
 
 export type ApiUpdateChatLeave = {
-  '@type': 'updateChatLeave';
+  "@type": "updateChatLeave";
   id: string;
 };
 
 export type ApiUpdateChatInbox = {
-  '@type': 'updateChatInbox';
+  "@type": "updateChatInbox";
   id: string;
   chat: Partial<ApiChat>;
 };
 
 export type ApiUpdateChatTypingStatus = {
-  '@type': 'updateChatTypingStatus';
+  "@type": "updateChatTypingStatus";
   id: string;
   threadId?: ThreadId;
   typingStatus: ApiTypingStatus | undefined;
 };
 
 export type ApiUpdateStartEmojiInteraction = {
-  '@type': 'updateStartEmojiInteraction';
+  "@type": "updateStartEmojiInteraction";
   id: string;
   emoji: string;
   messageId: number;
@@ -146,13 +153,13 @@ export type ApiUpdateStartEmojiInteraction = {
 };
 
 export type ApiUpdateChatFullInfo = {
-  '@type': 'updateChatFullInfo';
+  "@type": "updateChatFullInfo";
   id: string;
   fullInfo: Partial<ApiChatFullInfo>;
 };
 
 export type ApiUpdateChatMembers = {
-  '@type': 'updateChatMembers';
+  "@type": "updateChatMembers";
   id: string;
   replacedMembers?: ApiChatMember[];
   addedMember?: ApiChatMember;
@@ -160,52 +167,52 @@ export type ApiUpdateChatMembers = {
 };
 
 export type ApiUpdatePinnedChatIds = {
-  '@type': 'updatePinnedChatIds';
+  "@type": "updatePinnedChatIds";
   ids: string[];
   folderId?: number;
 };
 
 export type ApiUpdateChatListType = {
-  '@type': 'updateChatListType';
+  "@type": "updateChatListType";
   id: string;
   folderId: number;
 };
 
 export type ApiUpdateChatPinned = {
-  '@type': 'updateChatPinned';
+  "@type": "updateChatPinned";
   id: string;
   isPinned: boolean;
 };
 
 export type ApiUpdatePinnedSavedDialogIds = {
-  '@type': 'updatePinnedSavedDialogIds';
+  "@type": "updatePinnedSavedDialogIds";
   ids: string[];
 };
 
 export type ApiUpdateSavedDialogPinned = {
-  '@type': 'updateSavedDialogPinned';
+  "@type": "updateSavedDialogPinned";
   id: string;
   isPinned: boolean;
 };
 
 export type ApiUpdateChatFolder = {
-  '@type': 'updateChatFolder';
+  "@type": "updateChatFolder";
   id: number;
   folder: ApiChatFolder | undefined;
 };
 
 export type ApiUpdateChatFoldersOrder = {
-  '@type': 'updateChatFoldersOrder';
+  "@type": "updateChatFoldersOrder";
   orderedIds: number[];
 };
 
 export type ApiUpdateRecommendedChatFolders = {
-  '@type': 'updateRecommendedChatFolders';
+  "@type": "updateRecommendedChatFolders";
   folders: ApiChatFolder[];
 };
 
 export type ApiUpdateNewScheduledMessage = {
-  '@type': 'newScheduledMessage';
+  "@type": "newScheduledMessage";
   chatId: string;
   id: number;
   message: ApiMessage;
@@ -213,7 +220,7 @@ export type ApiUpdateNewScheduledMessage = {
 };
 
 export type ApiUpdateNewMessage = {
-  '@type': 'newMessage';
+  "@type": "newMessage";
   chatId: string;
   id: number;
   message: Partial<ApiMessage>;
@@ -222,154 +229,154 @@ export type ApiUpdateNewMessage = {
 };
 
 export type ApiUpdateMessage = {
-  '@type': 'updateMessage';
+  "@type": "updateMessage";
   chatId: string;
   id: number;
   message: Partial<ApiMessage>;
 };
 
 export type ApiUpdateScheduledMessage = {
-  '@type': 'updateScheduledMessage';
+  "@type": "updateScheduledMessage";
   chatId: string;
   id: number;
   message: Partial<ApiMessage>;
 };
 
 export type ApiUpdateQuickReplyMessage = {
-  '@type': 'updateQuickReplyMessage';
+  "@type": "updateQuickReplyMessage";
   id: number;
   message: Partial<ApiMessage>;
 };
 
 export type ApiUpdateDeleteQuickReplyMessages = {
-  '@type': 'deleteQuickReplyMessages';
+  "@type": "deleteQuickReplyMessages";
   quickReplyId: number;
   messageIds: number[];
 };
 
 export type ApiUpdateQuickReplies = {
-  '@type': 'updateQuickReplies';
+  "@type": "updateQuickReplies";
   quickReplies: ApiQuickReply[];
 };
 
 export type ApiDeleteQuickReply = {
-  '@type': 'deleteQuickReply';
+  "@type": "deleteQuickReply";
   quickReplyId: number;
 };
 
 export type ApiUpdatePinnedMessageIds = {
-  '@type': 'updatePinnedIds';
+  "@type": "updatePinnedIds";
   chatId: string;
   isPinned?: boolean;
   messageIds: number[];
 };
 
 export type ApiUpdateThreadInfos = {
-  '@type': 'updateThreadInfos';
+  "@type": "updateThreadInfos";
   threadInfoUpdates: Partial<ApiThreadInfo>[];
 };
 
 export type ApiUpdateScheduledMessageSendSucceeded = {
-  '@type': 'updateScheduledMessageSendSucceeded';
+  "@type": "updateScheduledMessageSendSucceeded";
   chatId: string;
   localId: number;
   message: ApiMessage;
 };
 
 export type ApiUpdateMessageSendSucceeded = {
-  '@type': 'updateMessageSendSucceeded';
+  "@type": "updateMessageSendSucceeded";
   chatId: string;
   localId: number;
   message: ApiMessage;
 };
 
 export type ApiUpdateMessageSendFailed = {
-  '@type': 'updateMessageSendFailed';
+  "@type": "updateMessageSendFailed";
   chatId: string;
   localId: number;
   error: string;
 };
 
 export type ApiUpdateCommonBoxMessages = {
-  '@type': 'updateCommonBoxMessages';
+  "@type": "updateCommonBoxMessages";
   ids: number[];
   messageUpdate: Partial<ApiMessage>;
 };
 
 export type ApiUpdateChannelMessages = {
-  '@type': 'updateChannelMessages';
+  "@type": "updateChannelMessages";
   channelId: string;
   ids: number[];
   messageUpdate: Partial<ApiMessage>;
 };
 
 export type ApiUpdateMessagePoll = {
-  '@type': 'updateMessagePoll';
+  "@type": "updateMessagePoll";
   pollId: string;
   pollUpdate: Partial<ApiPoll>;
 };
 
 export type ApiUpdateMessagePollVote = {
-  '@type': 'updateMessagePollVote';
+  "@type": "updateMessagePollVote";
   pollId: string;
   peerId: string;
   options: string[];
 };
 
 export type ApiUpdateServiceNotification = {
-  '@type': 'updateServiceNotification';
+  "@type": "updateServiceNotification";
   message: ApiMessage;
 };
 
 export type ApiUpdateDeleteMessages = {
-  '@type': 'deleteMessages';
+  "@type": "deleteMessages";
   ids: number[];
   chatId?: string;
 };
 
 export type ApiUpdateDeleteScheduledMessages = {
-  '@type': 'deleteScheduledMessages';
+  "@type": "deleteScheduledMessages";
   ids: number[];
   chatId?: string;
 };
 
 export type ApiUpdateDeleteHistory = {
-  '@type': 'deleteHistory';
+  "@type": "deleteHistory";
   chatId: string;
 };
 
 export type ApiUpdateDeleteSavedHistory = {
-  '@type': 'deleteSavedHistory';
+  "@type": "deleteSavedHistory";
   chatId: string;
 };
 
 export type ApiUpdateDeleteProfilePhotos = {
-  '@type': 'deleteProfilePhotos';
+  "@type": "deleteProfilePhotos";
   ids: string[];
   chatId: string;
 };
 
 export type ApiUpdateResetMessages = {
-  '@type': 'resetMessages';
+  "@type": "resetMessages";
   id: string;
 };
 
 export type ApiUpdateDraftMessage = {
-  '@type': 'draftMessage';
+  "@type": "draftMessage";
   chatId: string;
   threadId?: ThreadId;
   draft?: ApiDraft;
 };
 
 export type ApiUpdateMessageReactions = {
-  '@type': 'updateMessageReactions';
+  "@type": "updateMessageReactions";
   id: number;
   chatId: string;
   reactions: ApiReactions;
 };
 
 export type ApiUpdateMessageExtendedMedia = {
-  '@type': 'updateMessageExtendedMedia';
+  "@type": "updateMessageExtendedMedia";
   id: number;
   chatId: string;
   media?: MediaContent;
@@ -377,152 +384,152 @@ export type ApiUpdateMessageExtendedMedia = {
 };
 
 export type ApiDeleteContact = {
-  '@type': 'deleteContact';
+  "@type": "deleteContact";
   id: string;
 };
 
 export type ApiUpdateUser = {
-  '@type': 'updateUser';
+  "@type": "updateUser";
   id: string;
   user: Partial<ApiUser>;
   fullInfo?: ApiUserFullInfo;
 };
 
 export type ApiUpdateRequestUserUpdate = {
-  '@type': 'updateRequestUserUpdate';
+  "@type": "updateRequestUserUpdate";
   id: string;
 };
 
 export type ApiUpdateUserStatus = {
-  '@type': 'updateUserStatus';
+  "@type": "updateUserStatus";
   userId: string;
   status: ApiUserStatus;
 };
 
 export type ApiUpdateUserEmojiStatus = {
-  '@type': 'updateUserEmojiStatus';
+  "@type": "updateUserEmojiStatus";
   userId: string;
   emojiStatus?: ApiEmojiStatus;
 };
 
 export type ApiUpdateRecentEmojiStatuses = {
-  '@type': 'updateRecentEmojiStatuses';
+  "@type": "updateRecentEmojiStatuses";
 };
 
 export type ApiUpdateUserFullInfo = {
-  '@type': 'updateUserFullInfo';
+  "@type": "updateUserFullInfo";
   id: string;
   fullInfo: Partial<ApiUserFullInfo>;
 };
 
 export type ApiUpdateAvatar = {
-  '@type': 'updateAvatar';
+  "@type": "updateAvatar";
   chatId: string;
   dataUri: string;
 };
 
 export type ApiUpdateMessageImage = {
-  '@type': 'updateMessageImage';
+  "@type": "updateMessageImage";
   messageId: number;
   dataUri: string;
 };
 
 export type ApiUpdateError = {
-  '@type': 'error';
+  "@type": "error";
   error: ApiError;
 };
 
 export type ApiUpdateConfig = {
-  '@type': 'updateConfig';
+  "@type": "updateConfig";
 };
 
 export type ApiUpdateResetContacts = {
-  '@type': 'updateResetContactList';
+  "@type": "updateResetContactList";
 };
 
 export type ApiUpdateFavoriteStickers = {
-  '@type': 'updateFavoriteStickers';
+  "@type": "updateFavoriteStickers";
 };
 
 export type ApiUpdateRecentStickers = {
-  '@type': 'updateRecentStickers';
+  "@type": "updateRecentStickers";
 };
 
 export type ApiUpdateRecentReactions = {
-  '@type': 'updateRecentReactions';
+  "@type": "updateRecentReactions";
 };
 
 export type ApiUpdateMoveStickerSetToTop = {
-  '@type': 'updateMoveStickerSetToTop';
+  "@type": "updateMoveStickerSetToTop";
   isCustomEmoji?: boolean;
   id: string;
 };
 
 export type ApiUpdateStickerSets = {
-  '@type': 'updateStickerSets';
+  "@type": "updateStickerSets";
 };
 
 export type ApiUpdateStickerSetsOrder = {
-  '@type': 'updateStickerSetsOrder';
+  "@type": "updateStickerSetsOrder";
   order: string[];
   isCustomEmoji?: boolean;
 };
 
 export type ApiUpdateStickerSet = {
-  '@type': 'updateStickerSet';
+  "@type": "updateStickerSet";
   id: string;
   stickerSet: Partial<ApiStickerSet>;
 };
 
 export type ApiUpdateSavedGifs = {
-  '@type': 'updateSavedGifs';
+  "@type": "updateSavedGifs";
 };
 
 export type ApiUpdateTwoFaError = {
-  '@type': 'updateTwoFaError';
+  "@type": "updateTwoFaError";
   message: string;
 };
 
 export type ApiUpdateNotifySettings = {
-  '@type': 'updateNotifySettings';
-  peerType: 'contact' | 'group' | 'broadcast';
+  "@type": "updateNotifySettings";
+  peerType: "contact" | "group" | "broadcast";
   isSilent: boolean;
   shouldShowPreviews: boolean;
 };
 
 export type ApiUpdateNotifyExceptions = {
-  '@type': 'updateNotifyExceptions';
+  "@type": "updateNotifyExceptions";
 } & ApiNotifyException;
 
 export type ApiUpdateTopicNotifyExceptions = {
-  '@type': 'updateTopicNotifyExceptions';
+  "@type": "updateTopicNotifyExceptions";
   topicId: number;
 } & ApiNotifyException;
 
 export type ApiUpdateTwoFaStateWaitCode = {
-  '@type': 'updateTwoFaStateWaitCode';
+  "@type": "updateTwoFaStateWaitCode";
   length: number;
 };
 
 export type ApiUpdatePeerBlocked = {
-  '@type': 'updatePeerBlocked';
+  "@type": "updatePeerBlocked";
   id: string;
   isBlocked?: boolean;
   isBlockedFromStories?: boolean;
 };
 
 export type ApiUpdatePaymentVerificationNeeded = {
-  '@type': 'updatePaymentVerificationNeeded';
+  "@type": "updatePaymentVerificationNeeded";
   url: string;
 };
 
 export type ApiUpdatePaymentStateCompleted = {
-  '@type': 'updatePaymentStateCompleted';
+  "@type": "updatePaymentStateCompleted";
   slug?: string;
 };
 
 export type ApiUpdatePrivacy = {
-  '@type': 'updatePrivacy';
+  "@type": "updatePrivacy";
   key: ApiPrivacyKey;
   rules: {
     visibility: PrivacyVisibility;
@@ -534,47 +541,47 @@ export type ApiUpdatePrivacy = {
 };
 
 export type ApiUpdateServerTimeOffset = {
-  '@type': 'updateServerTimeOffset';
+  "@type": "updateServerTimeOffset";
   serverTimeOffset: number;
 };
 
 export type ApiUpdateGroupCall = {
-  '@type': 'updateGroupCall';
+  "@type": "updateGroupCall";
   call: ApiGroupCall;
 };
 
 export type ApiUpdateGroupCallChatId = {
-  '@type': 'updateGroupCallChatId';
+  "@type": "updateGroupCallChatId";
   call: Partial<ApiGroupCall>;
   chatId: string;
 };
 
 export type ApiUpdateGroupCallLeavePresentation = {
-  '@type': 'updateGroupCallLeavePresentation';
+  "@type": "updateGroupCallLeavePresentation";
 };
 
 export type ApiUpdateGroupCallParticipants = {
-  '@type': 'updateGroupCallParticipants';
+  "@type": "updateGroupCallParticipants";
   groupCallId: string;
   participants: GroupCallParticipant[];
   nextOffset?: string;
 };
 
 export type ApiUpdatePendingJoinRequests = {
-  '@type': 'updatePendingJoinRequests';
+  "@type": "updatePendingJoinRequests";
   chatId: string;
   recentRequesterIds: string[];
   requestsPending: number;
 };
 
 export type ApiUpdateGroupCallConnection = {
-  '@type': 'updateGroupCallConnection';
+  "@type": "updateGroupCallConnection";
   data: GroupCallConnectionData;
   presentation: boolean;
 };
 
 export type ApiUpdateGroupCallStreams = {
-  '@type': 'updateGroupCallStreams';
+  "@type": "updateGroupCallStreams";
   userId: string;
   hasAudioStream: boolean;
   hasVideoStream: boolean;
@@ -582,24 +589,24 @@ export type ApiUpdateGroupCallStreams = {
 };
 
 export type ApiUpdateGroupCallConnectionState = {
-  '@type': 'updateGroupCallConnectionState';
+  "@type": "updateGroupCallConnectionState";
   connectionState: GroupCallConnectionState;
   isSpeakerDisabled?: boolean;
 };
 
 export type ApiUpdatePhoneCall = {
-  '@type': 'updatePhoneCall';
+  "@type": "updatePhoneCall";
   call: ApiPhoneCall;
 };
 
 export type ApiUpdatePhoneCallSignalingData = {
-  '@type': 'updatePhoneCallSignalingData';
+  "@type": "updatePhoneCallSignalingData";
   callId: string;
   data: number[];
 };
 
 export type ApiUpdatePhoneCallMediaState = {
-  '@type': 'updatePhoneCallMediaState';
+  "@type": "updatePhoneCallMediaState";
   isMuted: boolean;
   videoState: VideoState;
   videoRotation: VideoRotation;
@@ -608,60 +615,60 @@ export type ApiUpdatePhoneCallMediaState = {
 };
 
 export type ApiUpdatePhoneCallConnectionState = {
-  '@type': 'updatePhoneCallConnectionState';
+  "@type": "updatePhoneCallConnectionState";
   connectionState: RTCPeerConnectionState;
 };
 
 export type ApiUpdateWebViewResultSent = {
-  '@type': 'updateWebViewResultSent';
+  "@type": "updateWebViewResultSent";
   queryId: string;
 };
 
 export type ApiUpdateBotMenuButton = {
-  '@type': 'updateBotMenuButton';
+  "@type": "updateBotMenuButton";
   botId: string;
   button: ApiBotMenuButton;
 };
 
 export type ApiUpdateTranscribedAudio = {
-  '@type': 'updateTranscribedAudio';
+  "@type": "updateTranscribedAudio";
   transcriptionId: string;
   text: string;
   isPending?: boolean;
 };
 
 export type ApiUpdatePinnedTopic = {
-  '@type': 'updatePinnedTopic';
+  "@type": "updatePinnedTopic";
   topicId: number;
   chatId: string;
   isPinned: boolean;
 };
 
 export type ApiUpdatePinnedTopicsOrder = {
-  '@type': 'updatePinnedTopicsOrder';
+  "@type": "updatePinnedTopicsOrder";
   chatId: string;
   order: number[];
 };
 
 export type ApiUpdateTopic = {
-  '@type': 'updateTopic';
+  "@type": "updateTopic";
   chatId: string;
   topicId: number;
 };
 
 export type ApiUpdateTopics = {
-  '@type': 'updateTopics';
+  "@type": "updateTopics";
   chatId: string;
 };
 
 export type ApiUpdateViewForumAsMessages = {
-  '@type': 'updateViewForumAsMessages';
+  "@type": "updateViewForumAsMessages";
   chatId: string;
   isEnabled?: true;
 };
 
 export type ApiUpdateMessageTranslations = {
-  '@type': 'updateMessageTranslations';
+  "@type": "updateMessageTranslations";
   chatId: string;
   messageIds: number[];
   translations: ApiFormattedText[];
@@ -669,54 +676,54 @@ export type ApiUpdateMessageTranslations = {
 };
 
 export type ApiUpdateFetchingDifference = {
-  '@type': 'updateFetchingDifference';
+  "@type": "updateFetchingDifference";
   isFetching: boolean;
 };
 
 export type ApiRequestReconnectApi = {
-  '@type': 'requestReconnectApi';
+  "@type": "requestReconnectApi";
 };
 
 export type ApiUpdateStory = {
-  '@type': 'updateStory';
+  "@type": "updateStory";
   peerId: string;
   story: ApiStory | ApiStorySkipped;
 };
 
 export type ApiUpdateDeleteStory = {
-  '@type': 'deleteStory';
+  "@type": "deleteStory";
   peerId: string;
   storyId: number;
 };
 
 export type ApiUpdateReadStories = {
-  '@type': 'updateReadStories';
+  "@type": "updateReadStories";
   peerId: string;
   lastReadId: number;
 };
 
 export type ApiUpdateSentStoryReaction = {
-  '@type': 'updateSentStoryReaction';
+  "@type": "updateSentStoryReaction";
   peerId: string;
   storyId: number;
   reaction?: ApiReaction;
 };
 
 export type ApiUpdateStealthMode = {
-  '@type': 'updateStealthMode';
+  "@type": "updateStealthMode";
   stealthMode: ApiStealthMode;
 };
 
 export type ApiRequestSync = {
-  '@type': 'requestSync';
+  "@type": "requestSync";
 };
 
 export type ApiUpdateAttachMenuBots = {
-  '@type': 'updateAttachMenuBots';
+  "@type": "updateAttachMenuBots";
 };
 
 export type ApiUpdateNewAuthorization = {
-  '@type': 'updateNewAuthorization';
+  "@type": "updateNewAuthorization";
   hash: string;
   isUnconfirmed?: true;
   date?: number;
@@ -725,51 +732,135 @@ export type ApiUpdateNewAuthorization = {
 };
 
 export type ApiUpdateGroupInvitePrivacyForbidden = {
-  '@type': 'updateGroupInvitePrivacyForbidden';
+  "@type": "updateGroupInvitePrivacyForbidden";
   userId: string;
 };
 
 export type ApiUpdateSavedReactionTags = {
-  '@type': 'updateSavedReactionTags';
+  "@type": "updateSavedReactionTags";
 };
 
 export type ApiUpdatePremiumFloodWait = {
-  '@type': 'updatePremiumFloodWait';
+  "@type": "updatePremiumFloodWait";
   isUpload?: boolean;
 };
 
-export type ApiUpdate = (
-  ApiUpdateReady | ApiUpdateSession | ApiUpdateWebAuthTokenFailed | ApiUpdateRequestUserUpdate |
-  ApiUpdateAuthorizationState | ApiUpdateAuthorizationError | ApiUpdateConnectionState | ApiUpdateCurrentUser |
-  ApiUpdateChat | ApiUpdateChatInbox | ApiUpdateChatTypingStatus | ApiUpdateChatFullInfo | ApiUpdatePinnedChatIds |
-  ApiUpdateChatMembers | ApiUpdateChatJoin | ApiUpdateChatLeave | ApiUpdateChatPinned | ApiUpdatePinnedMessageIds |
-  ApiUpdateChatListType | ApiUpdateChatFolder | ApiUpdateChatFoldersOrder | ApiUpdateRecommendedChatFolders |
-  ApiUpdateNewMessage | ApiUpdateMessage | ApiUpdateThreadInfos | ApiUpdateCommonBoxMessages |
-  ApiUpdateDeleteMessages | ApiUpdateMessagePoll | ApiUpdateMessagePollVote | ApiUpdateDeleteHistory |
-  ApiUpdateMessageSendSucceeded | ApiUpdateMessageSendFailed | ApiUpdateServiceNotification |
-  ApiDeleteContact | ApiUpdateUser | ApiUpdateUserStatus | ApiUpdateUserFullInfo | ApiUpdateDeleteProfilePhotos |
-  ApiUpdateAvatar | ApiUpdateMessageImage | ApiUpdateDraftMessage |
-  ApiUpdateError | ApiUpdateResetContacts | ApiUpdateStartEmojiInteraction |
-  ApiUpdateFavoriteStickers | ApiUpdateStickerSet | ApiUpdateStickerSets | ApiUpdateStickerSetsOrder |
-  ApiUpdateRecentStickers | ApiUpdateSavedGifs | ApiUpdateNewScheduledMessage | ApiUpdateMoveStickerSetToTop |
-  ApiUpdateScheduledMessageSendSucceeded | ApiUpdateScheduledMessage |
-  ApiUpdateDeleteScheduledMessages | ApiUpdateResetMessages | ApiUpdateMessageTranslations |
-  ApiUpdateTwoFaError | ApiUpdateTwoFaStateWaitCode | ApiUpdateWebViewResultSent |
-  ApiUpdateNotifySettings | ApiUpdateNotifyExceptions | ApiUpdatePeerBlocked | ApiUpdatePrivacy |
-  ApiUpdateServerTimeOffset | ApiUpdateShowInvite | ApiUpdateMessageReactions | ApiUpdateSavedReactionTags |
-  ApiUpdateGroupCallParticipants | ApiUpdateGroupCallConnection | ApiUpdateGroupCall | ApiUpdateGroupCallStreams |
-  ApiUpdateGroupCallConnectionState | ApiUpdateGroupCallLeavePresentation | ApiUpdateGroupCallChatId |
-  ApiUpdatePendingJoinRequests | ApiUpdatePaymentVerificationNeeded | ApiUpdatePaymentStateCompleted |
-  ApiUpdatePhoneCall | ApiUpdatePhoneCallSignalingData | ApiUpdatePhoneCallMediaState |
-  ApiUpdatePhoneCallConnectionState | ApiUpdateBotMenuButton | ApiUpdateTranscribedAudio | ApiUpdateUserEmojiStatus |
-  ApiUpdateMessageExtendedMedia | ApiUpdateConfig | ApiUpdateTopicNotifyExceptions | ApiUpdatePinnedTopic |
-  ApiUpdatePinnedTopicsOrder | ApiUpdateTopic | ApiUpdateTopics | ApiUpdateRecentEmojiStatuses |
-  ApiUpdateRecentReactions | ApiUpdateStory | ApiUpdateReadStories | ApiUpdateDeleteStory | ApiUpdateSentStoryReaction |
-  ApiRequestReconnectApi | ApiRequestSync | ApiUpdateFetchingDifference | ApiUpdateChannelMessages |
-  ApiUpdateStealthMode | ApiUpdateAttachMenuBots | ApiUpdateNewAuthorization | ApiUpdateGroupInvitePrivacyForbidden |
-  ApiUpdateViewForumAsMessages | ApiUpdateSavedDialogPinned | ApiUpdatePinnedSavedDialogIds | ApiUpdateChatLastMessage |
-  ApiUpdateDeleteSavedHistory | ApiUpdatePremiumFloodWait |
-  ApiUpdateQuickReplyMessage | ApiUpdateQuickReplies | ApiDeleteQuickReply | ApiUpdateDeleteQuickReplyMessages
-);
+export type ApiUpdate =
+  | ApiUpdateReady
+  | ApiUpdateSession
+  | ApiUpdateWebAuthTokenFailed
+  | ApiUpdateRequestUserUpdate
+  | ApiUpdateAuthorizationState
+  | ApiUpdateAuthorizationError
+  | ApiUpdateConnectionState
+  | ApiUpdateCurrentUser
+  | ApiUpdateChat
+  | ApiUpdateChatInbox
+  | ApiUpdateChatTypingStatus
+  | ApiUpdateChatFullInfo
+  | ApiUpdatePinnedChatIds
+  | ApiUpdateChatMembers
+  | ApiUpdateChatJoin
+  | ApiUpdateChatLeave
+  | ApiUpdateChatPinned
+  | ApiUpdatePinnedMessageIds
+  | ApiUpdateChatListType
+  | ApiUpdateChatFolder
+  | ApiUpdateChatFoldersOrder
+  | ApiUpdateRecommendedChatFolders
+  | ApiUpdateNewMessage
+  | ApiUpdateMessage
+  | ApiUpdateThreadInfos
+  | ApiUpdateCommonBoxMessages
+  | ApiUpdateDeleteMessages
+  | ApiUpdateMessagePoll
+  | ApiUpdateMessagePollVote
+  | ApiUpdateDeleteHistory
+  | ApiUpdateMessageSendSucceeded
+  | ApiUpdateMessageSendFailed
+  | ApiUpdateServiceNotification
+  | ApiDeleteContact
+  | ApiUpdateUser
+  | ApiUpdateUserStatus
+  | ApiUpdateUserFullInfo
+  | ApiUpdateDeleteProfilePhotos
+  | ApiUpdateAvatar
+  | ApiUpdateMessageImage
+  | ApiUpdateDraftMessage
+  | ApiUpdateError
+  | ApiUpdateResetContacts
+  | ApiUpdateStartEmojiInteraction
+  | ApiUpdateFavoriteStickers
+  | ApiUpdateStickerSet
+  | ApiUpdateStickerSets
+  | ApiUpdateStickerSetsOrder
+  | ApiUpdateRecentStickers
+  | ApiUpdateSavedGifs
+  | ApiUpdateNewScheduledMessage
+  | ApiUpdateMoveStickerSetToTop
+  | ApiUpdateScheduledMessageSendSucceeded
+  | ApiUpdateScheduledMessage
+  | ApiUpdateDeleteScheduledMessages
+  | ApiUpdateResetMessages
+  | ApiUpdateMessageTranslations
+  | ApiUpdateTwoFaError
+  | ApiUpdateTwoFaStateWaitCode
+  | ApiUpdateWebViewResultSent
+  | ApiUpdateNotifySettings
+  | ApiUpdateNotifyExceptions
+  | ApiUpdatePeerBlocked
+  | ApiUpdatePrivacy
+  | ApiUpdateServerTimeOffset
+  | ApiUpdateShowInvite
+  | ApiUpdateMessageReactions
+  | ApiUpdateSavedReactionTags
+  | ApiUpdateGroupCallParticipants
+  | ApiUpdateGroupCallConnection
+  | ApiUpdateGroupCall
+  | ApiUpdateGroupCallStreams
+  | ApiUpdateGroupCallConnectionState
+  | ApiUpdateGroupCallLeavePresentation
+  | ApiUpdateGroupCallChatId
+  | ApiUpdatePendingJoinRequests
+  | ApiUpdatePaymentVerificationNeeded
+  | ApiUpdatePaymentStateCompleted
+  | ApiUpdatePhoneCall
+  | ApiUpdatePhoneCallSignalingData
+  | ApiUpdatePhoneCallMediaState
+  | ApiUpdatePhoneCallConnectionState
+  | ApiUpdateBotMenuButton
+  | ApiUpdateTranscribedAudio
+  | ApiUpdateUserEmojiStatus
+  | ApiUpdateMessageExtendedMedia
+  | ApiUpdateConfig
+  | ApiUpdateTopicNotifyExceptions
+  | ApiUpdatePinnedTopic
+  | ApiUpdatePinnedTopicsOrder
+  | ApiUpdateTopic
+  | ApiUpdateTopics
+  | ApiUpdateRecentEmojiStatuses
+  | ApiUpdateRecentReactions
+  | ApiUpdateStory
+  | ApiUpdateReadStories
+  | ApiUpdateDeleteStory
+  | ApiUpdateSentStoryReaction
+  | ApiRequestReconnectApi
+  | ApiRequestSync
+  | ApiUpdateFetchingDifference
+  | ApiUpdateChannelMessages
+  | ApiUpdateStealthMode
+  | ApiUpdateAttachMenuBots
+  | ApiUpdateNewAuthorization
+  | ApiUpdateGroupInvitePrivacyForbidden
+  | ApiUpdateViewForumAsMessages
+  | ApiUpdateSavedDialogPinned
+  | ApiUpdatePinnedSavedDialogIds
+  | ApiUpdateChatLastMessage
+  | ApiUpdateDeleteSavedHistory
+  | ApiUpdatePremiumFloodWait
+  | ApiUpdateQuickReplyMessage
+  | ApiUpdateQuickReplies
+  | ApiDeleteQuickReply
+  | ApiUpdateDeleteQuickReplyMessages;
 
 export type OnApiUpdate = (update: ApiUpdate) => void;

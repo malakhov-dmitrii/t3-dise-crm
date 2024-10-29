@@ -1,9 +1,16 @@
-import type { ThreadId } from '../../types';
-import type { ApiWebDocument } from './bots';
-import type { ApiGroupCall, PhoneCallAction } from './calls';
-import type { ApiChat, ApiPeerColor } from './chats';
-import type { ApiInputStorePaymentPurpose, ApiPremiumGiftCodeOption } from './payments';
-import type { ApiMessageStoryData, ApiWebPageStickerData, ApiWebPageStoryData } from './stories';
+import type { ThreadId } from "../../../telegram-tt/src/types";
+import type { ApiWebDocument } from "./bots";
+import type { ApiGroupCall, PhoneCallAction } from "./calls";
+import type { ApiChat, ApiPeerColor } from "./chats";
+import type {
+  ApiInputStorePaymentPurpose,
+  ApiPremiumGiftCodeOption,
+} from "./payments";
+import type {
+  ApiMessageStoryData,
+  ApiWebPageStickerData,
+  ApiWebPageStoryData,
+} from "./stories";
 
 export interface ApiDimensions {
   width: number;
@@ -11,11 +18,11 @@ export interface ApiDimensions {
 }
 
 export interface ApiPhotoSize extends ApiDimensions {
-  type: 's' | 'm' | 'x' | 'y' | 'z';
+  type: "s" | "m" | "x" | "y" | "z";
 }
 
 export interface ApiVideoSize extends ApiDimensions {
-  type: 'u' | 'v';
+  type: "u" | "v";
   videoStartTs: number;
   size: number;
 }
@@ -82,7 +89,10 @@ type ApiStickerSetInfoMissing = {
   isMissing: true;
 };
 
-export type ApiStickerSetInfo = ApiStickerSetInfoShortName | ApiStickerSetInfoId | ApiStickerSetInfoMissing;
+export type ApiStickerSetInfo =
+  | ApiStickerSetInfoShortName
+  | ApiStickerSetInfoId
+  | ApiStickerSetInfoMissing;
 
 export interface ApiVideo {
   id: string;
@@ -127,7 +137,7 @@ export interface ApiDocument {
   mimeType: string;
   thumbnail?: ApiThumbnail;
   previewBlobUrl?: string;
-  mediaType?: 'photo' | 'video';
+  mediaType?: "photo" | "video";
   mediaSize?: ApiDimensions;
 }
 
@@ -174,19 +184,19 @@ export interface ApiPoll {
 
 /* Used for Invoice UI */
 export type ApiInputInvoiceMessage = {
-  type: 'message';
+  type: "message";
   chatId: string;
   messageId: number;
   isExtendedMedia?: boolean;
 };
 
 export type ApiInputInvoiceSlug = {
-  type: 'slug';
+  type: "slug";
   slug: string;
 };
 
 export type ApiInputInvoiceGiveaway = {
-  type: 'giveaway';
+  type: "giveaway";
   chatId: string;
   additionalChannelIds?: string[];
   isOnlyForNewSubscribers?: boolean;
@@ -200,7 +210,7 @@ export type ApiInputInvoiceGiveaway = {
 };
 
 export type ApiInputInvoiceGiftCode = {
-  type: 'giftcode';
+  type: "giftcode";
   userIds: string[];
   boostChannelId?: string;
   currency: string;
@@ -208,29 +218,34 @@ export type ApiInputInvoiceGiftCode = {
   option: ApiPremiumGiftCodeOption;
 };
 
-export type ApiInputInvoice = ApiInputInvoiceMessage | ApiInputInvoiceSlug | ApiInputInvoiceGiveaway
-| ApiInputInvoiceGiftCode;
+export type ApiInputInvoice =
+  | ApiInputInvoiceMessage
+  | ApiInputInvoiceSlug
+  | ApiInputInvoiceGiveaway
+  | ApiInputInvoiceGiftCode;
 
 /* Used for Invoice request */
 export type ApiRequestInputInvoiceMessage = {
-  type: 'message';
+  type: "message";
   chat: ApiChat;
   messageId: number;
 };
 
 export type ApiRequestInputInvoiceSlug = {
-  type: 'slug';
+  type: "slug";
   slug: string;
 };
 
 export type ApiRequestInputInvoiceGiveaway = {
-  type: 'giveaway';
+  type: "giveaway";
   purpose: ApiInputStorePaymentPurpose;
   option: ApiPremiumGiftCodeOption;
 };
 
-export type ApiRequestInputInvoice = ApiRequestInputInvoiceMessage | ApiRequestInputInvoiceSlug
-| ApiRequestInputInvoiceGiveaway;
+export type ApiRequestInputInvoice =
+  | ApiRequestInputInvoiceMessage
+  | ApiRequestInputInvoiceSlug
+  | ApiRequestInputInvoiceGiveaway;
 
 export interface ApiInvoice {
   text: string;
@@ -267,12 +282,12 @@ export interface ApiGeoPoint {
 }
 
 interface ApiGeo {
-  type: 'geo';
+  type: "geo";
   geo: ApiGeoPoint;
 }
 
 interface ApiVenue {
-  type: 'venue';
+  type: "venue";
   geo: ApiGeoPoint;
   title: string;
   address: string;
@@ -282,7 +297,7 @@ interface ApiVenue {
 }
 
 interface ApiGeoLive {
-  type: 'geoLive';
+  type: "geoLive";
   geo: ApiGeoPoint;
   heading?: number;
   period: number;
@@ -325,7 +340,7 @@ export type ApiGiveawayResults = {
 };
 
 export type ApiNewPoll = {
-  summary: ApiPoll['summary'];
+  summary: ApiPoll["summary"];
   quiz?: {
     correctAnswers: string[];
     solution?: string;
@@ -338,14 +353,14 @@ export interface ApiAction {
   targetUserIds?: string[];
   targetChatId?: string;
   type:
-  | 'historyClear'
-  | 'contactSignUp'
-  | 'chatCreate'
-  | 'topicCreate'
-  | 'suggestProfilePhoto'
-  | 'joinedChannel'
-  | 'chatBoost'
-  | 'other';
+    | "historyClear"
+    | "contactSignUp"
+    | "chatCreate"
+    | "topicCreate"
+    | "suggestProfilePhoto"
+    | "joinedChannel"
+    | "chatBoost"
+    | "other";
   photo?: ApiPhoto;
   amount?: number;
   currency?: string;
@@ -386,7 +401,7 @@ export interface ApiWebPage {
 export type ApiReplyInfo = ApiMessageReplyInfo | ApiStoryReplyInfo;
 
 export interface ApiMessageReplyInfo {
-  type: 'message';
+  type: "message";
   replyToMsgId?: number;
   replyToPeerId?: string;
   replyFrom?: ApiMessageForwardInfo;
@@ -398,13 +413,13 @@ export interface ApiMessageReplyInfo {
 }
 
 export interface ApiStoryReplyInfo {
-  type: 'story';
+  type: "story";
   peerId: string;
   storyId: number;
 }
 
 export interface ApiInputMessageReplyInfo {
-  type: 'message';
+  type: "message";
   replyToMsgId: number;
   replyToTopId?: number;
   replyToPeerId?: string;
@@ -412,12 +427,14 @@ export interface ApiInputMessageReplyInfo {
 }
 
 export interface ApiInputStoryReplyInfo {
-  type: 'story';
+  type: "story";
   peerId: string;
   storyId: number;
 }
 
-export type ApiInputReplyInfo = ApiInputMessageReplyInfo | ApiInputStoryReplyInfo;
+export type ApiInputReplyInfo =
+  | ApiInputMessageReplyInfo
+  | ApiInputStoryReplyInfo;
 
 export interface ApiMessageForwardInfo {
   date: number;
@@ -443,9 +460,11 @@ export interface ApiStoryForwardInfo {
 
 export type ApiMessageEntityDefault = {
   type: Exclude<
-  `${ApiMessageEntityTypes}`,
-  `${ApiMessageEntityTypes.Pre}` | `${ApiMessageEntityTypes.TextUrl}` | `${ApiMessageEntityTypes.MentionName}` |
-  `${ApiMessageEntityTypes.CustomEmoji}`
+    `${ApiMessageEntityTypes}`,
+    | `${ApiMessageEntityTypes.Pre}`
+    | `${ApiMessageEntityTypes.TextUrl}`
+    | `${ApiMessageEntityTypes.MentionName}`
+    | `${ApiMessageEntityTypes.CustomEmoji}`
   >;
   offset: number;
   length: number;
@@ -479,29 +498,33 @@ export type ApiMessageEntityCustomEmoji = {
   documentId: string;
 };
 
-export type ApiMessageEntity = ApiMessageEntityDefault | ApiMessageEntityPre | ApiMessageEntityTextUrl |
-ApiMessageEntityMentionName | ApiMessageEntityCustomEmoji;
+export type ApiMessageEntity =
+  | ApiMessageEntityDefault
+  | ApiMessageEntityPre
+  | ApiMessageEntityTextUrl
+  | ApiMessageEntityMentionName
+  | ApiMessageEntityCustomEmoji;
 
 export enum ApiMessageEntityTypes {
-  Bold = 'MessageEntityBold',
-  Blockquote = 'MessageEntityBlockquote',
-  BotCommand = 'MessageEntityBotCommand',
-  Cashtag = 'MessageEntityCashtag',
-  Code = 'MessageEntityCode',
-  Email = 'MessageEntityEmail',
-  Hashtag = 'MessageEntityHashtag',
-  Italic = 'MessageEntityItalic',
-  MentionName = 'MessageEntityMentionName',
-  Mention = 'MessageEntityMention',
-  Phone = 'MessageEntityPhone',
-  Pre = 'MessageEntityPre',
-  Strike = 'MessageEntityStrike',
-  TextUrl = 'MessageEntityTextUrl',
-  Url = 'MessageEntityUrl',
-  Underline = 'MessageEntityUnderline',
-  Spoiler = 'MessageEntitySpoiler',
-  CustomEmoji = 'MessageEntityCustomEmoji',
-  Unknown = 'MessageEntityUnknown',
+  Bold = "MessageEntityBold",
+  Blockquote = "MessageEntityBlockquote",
+  BotCommand = "MessageEntityBotCommand",
+  Cashtag = "MessageEntityCashtag",
+  Code = "MessageEntityCode",
+  Email = "MessageEntityEmail",
+  Hashtag = "MessageEntityHashtag",
+  Italic = "MessageEntityItalic",
+  MentionName = "MessageEntityMentionName",
+  Mention = "MessageEntityMention",
+  Phone = "MessageEntityPhone",
+  Pre = "MessageEntityPre",
+  Strike = "MessageEntityStrike",
+  TextUrl = "MessageEntityTextUrl",
+  Url = "MessageEntityUrl",
+  Underline = "MessageEntityUnderline",
+  Spoiler = "MessageEntitySpoiler",
+  CustomEmoji = "MessageEntityCustomEmoji",
+  Unknown = "MessageEntityUnknown",
 }
 
 export interface ApiFormattedText {
@@ -541,7 +564,7 @@ export interface ApiMessage {
   isOutgoing: boolean;
   senderId?: string;
   replyInfo?: ApiReplyInfo;
-  sendingState?: 'messageSendingStatePending' | 'messageSendingStateFailed';
+  sendingState?: "messageSendingStatePending" | "messageSendingStateFailed";
   forwardInfo?: ApiMessageForwardInfo;
   isDeleting?: boolean;
   previousLocalId?: number;
@@ -623,12 +646,12 @@ export interface ApiAvailableReaction {
 }
 
 type ApiChatReactionsAll = {
-  type: 'all';
+  type: "all";
   areCustomAllowed?: true;
 };
 
 type ApiChatReactionsSome = {
-  type: 'some';
+  type: "some";
   allowed: ApiReaction[];
 };
 
@@ -677,7 +700,11 @@ export interface ApiMessageThreadInfo extends ApiBaseThreadInfo {
 
 export type ApiThreadInfo = ApiCommentsInfo | ApiMessageThreadInfo;
 
-export type ApiMessageOutgoingStatus = 'read' | 'succeeded' | 'pending' | 'failed';
+export type ApiMessageOutgoingStatus =
+  | "read"
+  | "succeeded"
+  | "pending"
+  | "failed";
 
 export type ApiSponsoredMessage = {
   randomId: string;
@@ -697,61 +724,61 @@ export type ApiSponsoredMessage = {
 // KeyboardButtons
 
 interface ApiKeyboardButtonSimple {
-  type: 'unsupported' | 'buy' | 'command' | 'requestPhone' | 'game';
+  type: "unsupported" | "buy" | "command" | "requestPhone" | "game";
   text: string;
 }
 
 interface ApiKeyboardButtonReceipt {
-  type: 'receipt';
+  type: "receipt";
   text: string;
   receiptMessageId: number;
 }
 
 interface ApiKeyboardButtonUrl {
-  type: 'url';
+  type: "url";
   text: string;
   url: string;
 }
 
 interface ApiKeyboardButtonSimpleWebView {
-  type: 'simpleWebView';
+  type: "simpleWebView";
   text: string;
   url: string;
 }
 
 interface ApiKeyboardButtonWebView {
-  type: 'webView';
+  type: "webView";
   text: string;
   url: string;
 }
 
 interface ApiKeyboardButtonCallback {
-  type: 'callback';
+  type: "callback";
   text: string;
   data: string;
 }
 
 interface ApiKeyboardButtonRequestPoll {
-  type: 'requestPoll';
+  type: "requestPoll";
   text: string;
   isQuiz?: boolean;
 }
 
 interface ApiKeyboardButtonSwitchBotInline {
-  type: 'switchBotInline';
+  type: "switchBotInline";
   text: string;
   query: string;
   isSamePeer?: boolean;
 }
 
 interface ApiKeyboardButtonUserProfile {
-  type: 'userProfile';
+  type: "userProfile";
   text: string;
   userId: string;
 }
 
 interface ApiKeyboardButtonUrlAuth {
-  type: 'urlAuth';
+  type: "urlAuth";
   text: string;
   url: string;
   buttonId: number;
@@ -763,8 +790,8 @@ export type ApiTranscription = {
   transcriptionId: string;
 };
 
-export type ApiKeyboardButton = (
-  ApiKeyboardButtonSimple
+export type ApiKeyboardButton =
+  | ApiKeyboardButtonSimple
   | ApiKeyboardButtonReceipt
   | ApiKeyboardButtonUrl
   | ApiKeyboardButtonCallback
@@ -773,8 +800,7 @@ export type ApiKeyboardButton = (
   | ApiKeyboardButtonUserProfile
   | ApiKeyboardButtonWebView
   | ApiKeyboardButtonSimpleWebView
-  | ApiKeyboardButtonUrlAuth
-);
+  | ApiKeyboardButtonUrlAuth;
 
 export type ApiKeyboardButtons = ApiKeyboardButton[][];
 export type ApiReplyKeyboard = {
@@ -782,17 +808,40 @@ export type ApiReplyKeyboard = {
   isKeyboardSingleUse?: boolean;
   isKeyboardSelective?: boolean;
 } & {
-  [K in 'inlineButtons' | 'keyboardButtons']?: ApiKeyboardButtons;
+  [K in "inlineButtons" | "keyboardButtons"]?: ApiKeyboardButtons;
 };
 
-export type ApiMessageSearchType = 'text' | 'media' | 'documents' | 'links' | 'audio' | 'voice' | 'profilePhoto';
-export type ApiGlobalMessageSearchType = 'text' | 'channels' | 'media' | 'documents' | 'links' | 'audio' | 'voice';
+export type ApiMessageSearchType =
+  | "text"
+  | "media"
+  | "documents"
+  | "links"
+  | "audio"
+  | "voice"
+  | "profilePhoto";
+export type ApiGlobalMessageSearchType =
+  | "text"
+  | "channels"
+  | "media"
+  | "documents"
+  | "links"
+  | "audio"
+  | "voice";
 
-export type ApiReportReason = 'spam' | 'violence' | 'pornography' | 'childAbuse'
-| 'copyright' | 'geoIrrelevant' | 'fake' | 'illegalDrugs' | 'personalDetails' | 'other';
+export type ApiReportReason =
+  | "spam"
+  | "violence"
+  | "pornography"
+  | "childAbuse"
+  | "copyright"
+  | "geoIrrelevant"
+  | "fake"
+  | "illegalDrugs"
+  | "personalDetails"
+  | "other";
 
 export type ApiSendMessageAction = {
-  type: 'cancel' | 'typing' | 'recordAudio' | 'chooseSticker' | 'playingGame';
+  type: "cancel" | "typing" | "recordAudio" | "chooseSticker" | "playingGame";
 };
 
 export type ApiThemeParameters = {
@@ -832,18 +881,20 @@ export type ApiQuickReply = {
   topMessageId: number;
 };
 
-export type ApiSponsoredMessageReportResult = {
-  type: 'reported' | 'hidden' | 'premiumRequired';
-} | {
-  type: 'selectOption';
-  title: string;
-  options: {
-    text: string;
-    option: string;
-  }[];
-};
+export type ApiSponsoredMessageReportResult =
+  | {
+      type: "reported" | "hidden" | "premiumRequired";
+    }
+  | {
+      type: "selectOption";
+      title: string;
+      options: {
+        text: string;
+        option: string;
+      }[];
+    };
 
 export const MAIN_THREAD_ID = -1;
 
 // `Symbol` can not be transferred from worker
-export const MESSAGE_DELETED = 'MESSAGE_DELETED';
+export const MESSAGE_DELETED = "MESSAGE_DELETED";

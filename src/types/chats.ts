@@ -1,18 +1,25 @@
-import type { ThreadId } from '../../types';
-import type { ApiBotCommand } from './bots';
+import { ThreadId } from "../../../telegram-tt/src/types";
+import type { ApiBotCommand } from "./bots";
 import type {
-  ApiChatReactions, ApiFormattedText, ApiPhoto, ApiStickerSet,
-} from './messages';
-import type { ApiChatInviteImporter } from './misc';
+  ApiChatReactions,
+  ApiFormattedText,
+  ApiPhoto,
+  ApiStickerSet,
+} from "./messages";
+import type { ApiChatInviteImporter } from "./misc";
 import type {
-  ApiEmojiStatus, ApiFakeType, ApiUser, ApiUsername,
-} from './users';
+  ApiEmojiStatus,
+  ApiFakeType,
+  ApiUser,
+  ApiUsername,
+} from "./users";
 
-type ApiChatType = (
-  'chatTypePrivate' | 'chatTypeSecret' |
-  'chatTypeBasicGroup' | 'chatTypeSuperGroup' |
-  'chatTypeChannel'
-);
+type ApiChatType =
+  | "chatTypePrivate"
+  | "chatTypeSecret"
+  | "chatTypeBasicGroup"
+  | "chatTypeSuperGroup"
+  | "chatTypeChannel";
 
 export type ApiPeer = ApiChat | ApiUser;
 
