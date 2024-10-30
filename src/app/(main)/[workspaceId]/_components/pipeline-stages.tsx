@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { api } from "@/trpc/react";
 import ChatItem from "./chat-item";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -16,9 +16,15 @@ import { type ChatItem as ChatItemType } from "@/server/db/schema";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useIframeOpen, useTelegram } from "@/services";
 
 const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
   const [parent] = useAutoAnimate();
+
+  const tg = useTelegram();
+  const [iframeOpen, setIframeOpen] = useIframeOpen();
+
+  const dragStartTimestamp = useRef<number | undefined>();
   const [activeChat, setActiveChat] = useState<ChatItemType | null>(null);
   const { data: workspace } = api.workspaces.getWorkspace.useQuery({
     workspaceId,
@@ -49,6 +55,7 @@ const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
   const pipelineStages = pipeline?.workspacePipelineStages;
 
   const handleDragStart = (event: DragStartEvent) => {
+    dragStartTimestamp.current = Date.now();
     const chat = workspace?.workspaceChats.find(
       (c) => c.id === event.active.id,
     );
@@ -56,6 +63,18 @@ const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    const dragDuration = Date.now() - (dragStartTimestamp.current ?? 0);
+    console.log("DRAG DURATION ", dragDuration);
+
+    if (dragDuration < 300) {
+      void tg?.actions.proxy.openChat({
+        id: activeChat?.telegramChatId.toString() ?? "",
+      });
+      setIframeOpen(true);
+    }
+
+    dragStartTimestamp.current = undefined;
+
     setActiveChat(null);
     const { active, over } = event;
 
