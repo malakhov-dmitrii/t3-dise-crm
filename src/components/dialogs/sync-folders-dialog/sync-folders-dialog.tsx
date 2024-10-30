@@ -90,7 +90,7 @@ const SyncFoldersDialog = () => {
     }
 
     if (selectedFolders.length === 0) {
-      toast.error("No folders selected");
+      if (!silent) toast.error("No folders selected");
       return;
     }
 
@@ -127,7 +127,8 @@ const SyncFoldersDialog = () => {
 
         {isLoading && <Skeleton className="h-[56px] w-full rounded-lg" />}
         {error && <p className="text-red-500">Error: {error.message}</p>}
-        {folders?.list && (
+
+        {!!folders?.list.length ? (
           <div className="m-auto flex w-full flex-col gap-0 rounded-lg border border-border bg-gray-100 dark:bg-neutral-900">
             {folders?.list.map((folder) => (
               <div
@@ -152,6 +153,11 @@ const SyncFoldersDialog = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <p className="text-center text-muted-foreground">
+            No folders found. Please group some chats in Telegram, then try
+            again.
+          </p>
         )}
 
         <DialogFooter className="">
