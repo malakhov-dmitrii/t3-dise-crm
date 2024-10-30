@@ -15,8 +15,10 @@ import {
 import { type ChatItem as ChatItemType } from "@/server/db/schema";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
+  const [parent] = useAutoAnimate();
   const [activeChat, setActiveChat] = useState<ChatItemType | null>(null);
   const { data: workspace } = api.workspaces.getWorkspace.useQuery({
     workspaceId,
@@ -24,8 +26,17 @@ const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
   const utils = api.useUtils();
 
   const updateChatStage = api.workspaces.updateChatStage.useMutation({
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       void utils.workspaces.getWorkspace.invalidate({ workspaceId });
+
+      // Make an optimistic update
+      utils.workspaces.getWorkspace.setData({ workspaceId }, (prev) => {
+        if (!prev) return prev;
+        const chat = prev.workspaceChats.find((c) => c.id === variables.chatId);
+        if (!chat) return prev;
+        chat.pipelineStageId = variables.pipelineStageId;
+        return prev;
+      });
     },
     onError: (error) => {
       toast.error("Failed to update chat stage", {
@@ -86,7 +97,7 @@ const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 p-2">
+                <div className="flex flex-col gap-3 p-2" ref={parent}>
                   {chats?.map((chat) => <ChatItem key={chat.id} chat={chat} />)}
                 </div>
 

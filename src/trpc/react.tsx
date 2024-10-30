@@ -11,6 +11,7 @@ import { type AppRouter } from "@/server/api/root";
 import { createQueryClient } from "./query-client";
 import { env } from "@/env";
 import { getBaseUrl } from "@/lib/utils";
+import { QueryNormalizerProvider } from "@normy/react-query";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
@@ -63,10 +64,12 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <api.Provider client={trpcClient} queryClient={queryClient}>
-        {props.children}
-      </api.Provider>
-    </QueryClientProvider>
+    <QueryNormalizerProvider queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <api.Provider client={trpcClient} queryClient={queryClient}>
+          {props.children}
+        </api.Provider>
+      </QueryClientProvider>
+    </QueryNormalizerProvider>
   );
 }
