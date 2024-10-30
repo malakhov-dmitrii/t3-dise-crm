@@ -205,4 +205,39 @@ export const workspacesRouter = createTRPCRouter({
         })
         .where(eq(workspaceUsers.workspaceId, workspaceId));
     }),
+
+  updateChatStage: protectedProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        pipelineStageId: z.string(),
+        workspaceId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { chatId, pipelineStageId, workspaceId } = input;
+
+      // Verify user has access to this workspace
+      const workspace = await ctx.db.query.workspaces.findFirst({
+        where: (workspaces, { eq }) => eq(workspaces.id, workspaceId),
+        with: {
+          workspaceUsers: {
+            where: (wu, { eq }) => eq(wu.userId, ctx.session.id),
+          },
+        },
+      });
+
+      if (!workspace || workspace.workspaceUsers.length === 0) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You don't have access to this workspace",
+        });
+      }
+
+      // Update the chat's pipeline stage
+      return await ctx.db
+        .update(workspaceChats)
+        .set({ pipelineStageId })
+        .where(eq(workspaceChats.id, chatId));
+    }),
 });

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
+    "@dnd-kit/core": "^6.1.0",
     "@formkit/auto-animate": "^0.8.2",
     "@legendapp/state": "^2.1.15",
     "@microsoft/signalr": "^8.0.7",
