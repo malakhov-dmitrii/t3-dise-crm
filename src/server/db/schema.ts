@@ -1,8 +1,9 @@
-import { relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
   integer,
+  json,
   pgTableCreator,
   primaryKey,
   text,
@@ -142,7 +143,7 @@ export const workspaces = createTable("workspace", {
   name: text("name"),
   adminId: varchar("admin_id", { length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   thumbnailUrl: text("thumbnail_url"),
 
   createdAt: timestamp("created_at", {
@@ -159,19 +160,24 @@ export const workspacesRelations = relations(workspaces, ({ one, many }) => ({
   admin: one(users, { fields: [workspaces.adminId], references: [users.id] }),
   workspaceUsers: many(workspaceUsers),
   workspacePipelines: many(workspacePipelines),
+  workspaceChats: many(workspaceChats),
 }));
 
 export const workspaceUsers = createTable("workspace_user", {
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   workspaceId: varchar("workspace_id", { length: 255 })
     .notNull()
-    .references(() => workspaces.id),
+    .references(() => workspaces.id, { onDelete: "cascade" }),
   userId: varchar("user_id", { length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", {
     mode: "date",
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
+  syncedFolders: json("synced_folders").$type<string[]>(),
   invitedBy: varchar("invited_by", { length: 255 }).references(() => users.id),
   role: varchar("role", { length: 255 })
     .$type<"admin" | "user">()
@@ -192,7 +198,7 @@ export const workspacePipelines = createTable("workspace_pipeline", {
     .$defaultFn(() => crypto.randomUUID()),
   workspaceId: varchar("workspace_id", { length: 255 })
     .notNull()
-    .references(() => workspaces.id),
+    .references(() => workspaces.id, { onDelete: "cascade" }),
   name: text("name"),
   createdAt: timestamp("created_at", {
     mode: "date",
@@ -221,7 +227,7 @@ export const workspacePipelineStages = createTable("workspace_pipeline_stage", {
     .$defaultFn(() => crypto.randomUUID()),
   workspacePipelineId: varchar("workspace_pipeline_id", { length: 255 })
     .notNull()
-    .references(() => workspacePipelines.id),
+    .references(() => workspacePipelines.id, { onDelete: "cascade" }),
 
   name: text("name"),
   order: integer("order").default(0),
@@ -242,10 +248,65 @@ export const workspacePipelineStages = createTable("workspace_pipeline_stage", {
 
 export const workspacePipelineStagesRelations = relations(
   workspacePipelineStages,
-  ({ one }) => ({
+  ({ one, many }) => ({
     workspacePipeline: one(workspacePipelines, {
       fields: [workspacePipelineStages.workspacePipelineId],
       references: [workspacePipelines.id],
     }),
   }),
 );
+
+export const workspaceChats = createTable("workspace_chat", {
+  id: varchar("id", { length: 255 })
+    .primaryKey()
+    .$defaultFn(() => nid()),
+  workspaceId: varchar("workspace_id", { length: 255 })
+    .notNull()
+    .references(() => workspaces.id),
+  telegramChatId: text("telegram_chat_id").notNull(),
+  name: text("name"),
+  type: varchar("type", { length: 255 }),
+  lastMessageAt: timestamp("last_message_at", {
+    mode: "date",
+    withTimezone: true,
+  }),
+
+  pipelineId: varchar("pipeline_id", { length: 255 }).references(
+    () => workspacePipelines.id,
+  ),
+  pipelineStageId: varchar("pipeline_stage_id", { length: 255 }).references(
+    () => workspacePipelineStages.id,
+  ),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    withTimezone: true,
+  }).default(sql`CURRENT_TIMESTAMP`),
+  createdBy: varchar("created_by", { length: 255 }).references(() => users.id),
+  updatedBy: varchar("updated_by", { length: 255 }).references(() => users.id),
+});
+
+export const workspaceChatsRelations = relations(workspaceChats, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [workspaceChats.workspaceId],
+    references: [workspaces.id],
+  }),
+  pipeline: one(workspacePipelines, {
+    fields: [workspaceChats.pipelineId],
+    references: [workspacePipelines.id],
+  }),
+  createdBy: one(users, {
+    fields: [workspaceChats.createdBy],
+    references: [users.id],
+  }),
+  updatedBy: one(users, {
+    fields: [workspaceChats.updatedBy],
+    references: [users.id],
+  }),
+}));
+
+export type ChatItem = InferSelectModel<typeof workspaceChats>;

@@ -7,7 +7,7 @@ const locales = ["en", "ru"];
 
 export default getRequestConfig(async () => {
   const session = await getServerAuthSession();
-  const user = await api.user.getUser();
+  const user = session ? await api.user.getUser() : undefined;
   // Provide a static locale, fetch a user setting,
   // read from `cookies()`, `headers()`, etc.
   const l = user?.language ?? session?.language ?? "en";

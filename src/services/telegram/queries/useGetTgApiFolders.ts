@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTelegram, useTgConnected } from "../context";
 
-export const useGetTgApiFolders = () => {
+export const useGetTgApiFolders = ({ enabled }: { enabled: boolean }) => {
   const tg = useTelegram();
   const methods = tg?.methods;
   const [isTgConnected] = useTgConnected();
@@ -27,6 +27,6 @@ export const useGetTgApiFolders = () => {
       return true;
     },
     refetchOnWindowFocus: false,
-    enabled: !!methods && isTgConnected,
+    enabled: !!methods && isTgConnected && enabled,
   });
 };

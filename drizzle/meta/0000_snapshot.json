@@ -1,5 +1,5 @@
 {
-  "id": "45d3b853-aef0-44e3-b569-85d7cb6351e1",
+  "id": "06119ad7-32db-4270-b929-7df5c1918f25",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -222,6 +222,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "language": {
+          "name": "language",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'en'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -304,6 +311,156 @@
       },
       "uniqueConstraints": {}
     },
+    "public.workspace_chat": {
+      "name": "workspace_chat",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "workspace_id": {
+          "name": "workspace_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telegram_chat_id": {
+          "name": "telegram_chat_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_message_at": {
+          "name": "last_message_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pipeline_id": {
+          "name": "pipeline_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pipeline_stage_id": {
+          "name": "pipeline_stage_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "workspace_chat_workspace_id_workspace_id_fk": {
+          "name": "workspace_chat_workspace_id_workspace_id_fk",
+          "tableFrom": "workspace_chat",
+          "tableTo": "workspace",
+          "columnsFrom": [
+            "workspace_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "workspace_chat_pipeline_id_workspace_pipeline_id_fk": {
+          "name": "workspace_chat_pipeline_id_workspace_pipeline_id_fk",
+          "tableFrom": "workspace_chat",
+          "tableTo": "workspace_pipeline",
+          "columnsFrom": [
+            "pipeline_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "workspace_chat_pipeline_stage_id_workspace_pipeline_stage_id_fk": {
+          "name": "workspace_chat_pipeline_stage_id_workspace_pipeline_stage_id_fk",
+          "tableFrom": "workspace_chat",
+          "tableTo": "workspace_pipeline_stage",
+          "columnsFrom": [
+            "pipeline_stage_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "workspace_chat_created_by_user_id_fk": {
+          "name": "workspace_chat_created_by_user_id_fk",
+          "tableFrom": "workspace_chat",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "workspace_chat_updated_by_user_id_fk": {
+          "name": "workspace_chat_updated_by_user_id_fk",
+          "tableFrom": "workspace_chat",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.workspace_pipeline_stage": {
       "name": "workspace_pipeline_stage",
       "schema": "",
@@ -380,7 +537,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -399,7 +556,7 @@
         },
         "workspace_id": {
           "name": "workspace_id",
-          "type": "integer",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -436,7 +593,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -447,9 +604,15 @@
       "name": "workspace_user",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
         "workspace_id": {
           "name": "workspace_id",
-          "type": "integer",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -492,7 +655,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "workspace_user_user_id_user_id_fk": {
@@ -505,7 +668,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "workspace_user_invited_by_user_id_fk": {
@@ -531,7 +694,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(255)",
           "primaryKey": true,
           "notNull": true
         },
@@ -580,7 +743,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

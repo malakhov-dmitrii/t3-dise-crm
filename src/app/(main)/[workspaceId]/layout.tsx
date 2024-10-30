@@ -14,7 +14,6 @@ export default function WorkspaceLayout({
 
   // This part is needed here to save workspaceId for all nested pages and avoid unexpected workspaces changes
   useEffect(() => {
-    console.log(lastWorkspaceId, params.workspaceId);
     if (lastWorkspaceId !== params.workspaceId && params.workspaceId) {
       setLastWorkspaceId(params.workspaceId);
     }

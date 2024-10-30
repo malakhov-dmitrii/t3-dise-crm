@@ -1,0 +1,1 @@
+ALTER TABLE "workspace_user" RENAME COLUMN "synced_chats" TO "synced_folders";

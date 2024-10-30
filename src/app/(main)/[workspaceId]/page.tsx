@@ -1,13 +1,23 @@
-"use client";
+import { api } from "@/trpc/server";
+import PipelineStages from "./_components/pipeline-stages";
+import PipelineWrapper from "./_components/pipeline-wrapper";
 
-export default function Page({ params }: { params: { workspaceId: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: { workspaceId: string };
+}) {
+  await api.workspaces.getWorkspace.prefetch({
+    workspaceId: params.workspaceId,
+  });
+
   return (
-    <div className="w-full">
-      <div className="h-[calc(100vh-5rem)] w-full rounded-lg bg-white py-4 shadow dark:bg-neutral-900">
-        <p className="text-center text-sm text-muted-foreground">
-          Pipelines will be here
-        </p>
-      </div>
+    <div className="">
+      <PipelineWrapper>
+        <div className="flex h-full flex-nowrap overflow-x-auto">
+          <PipelineStages workspaceId={params.workspaceId} />
+        </div>
+      </PipelineWrapper>
     </div>
   );
 }

@@ -10,8 +10,6 @@ export default async function Layout({
 }) {
   const session = await getServerAuthSession();
 
-  console.log({ session });
-
   if (!session) {
     redirect("/login");
   }

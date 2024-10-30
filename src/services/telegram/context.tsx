@@ -12,6 +12,9 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useThrottle } from "@uidotdev/usehooks";
 import useThrottledCallback from "@/hooks/useThrottledCallback";
+import { useQueryClient } from "@tanstack/react-query";
+import { api } from "@/trpc/react";
+import { useLastWorkspaceId } from "@/app/(main)/_component/main-layout";
 
 export type TelegramWindowContextType = {
   actions: Requester<Actions>;
@@ -75,6 +78,7 @@ export const TelegramWindowContext = React.createContext<
 export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [tgConnected, setTgConnected] = useTgConnected();
   const [tgUserId, setTgUserId] = useTgUserId();
@@ -84,6 +88,16 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
   );
   const [iframeOpen, setIframeOpen] = useAtom(iframeOpenAtom);
   const [iframeClassName] = useAtom(iframeClassNameAtom);
+
+  const [workspaceId] = useLastWorkspaceId();
+  const { data: workspace } = api.workspaces.getWorkspace.useQuery(
+    {
+      workspaceId: workspaceId ?? "",
+    },
+    {
+      enabled: !!workspaceId,
+    },
+  );
 
   const [frameReady, setFrameReady] = useState(false);
 
@@ -133,6 +147,22 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
     1000,
   );
 
+  const throttledNewMessage = useThrottledCallback(
+    (data) => {
+      if (!workspaceId) return;
+      console.log("NEW MESSAGE", data);
+      // data
+      const chat = workspace?.workspaceChats.find(
+        (chat) => chat.telegramChatId === data.chatId,
+      );
+      if (chat) {
+        void queryClient.invalidateQueries({ queryKey: ["synFoldersQuery"] });
+      }
+    },
+    [queryClient, workspaceId],
+    1000,
+  );
+
   useEffect(() => {
     if (!frameReady || !args?.events) return;
 
@@ -149,22 +179,39 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
       throttledAuthStateChange,
     );
 
+    const unNewMessage = args?.events.subscribe(
+      "newMessage",
+      // throttledNewMessage,
+      (data) => {
+        // if (!workspaceId) return;
+        console.log("NEW MESSAGE", data);
+        // data
+        const chat = workspace?.workspaceChats.find(
+          (chat) => chat.telegramChatId === data.chatId,
+        );
+        if (chat) {
+          void queryClient.invalidateQueries({ queryKey: ["synFoldersQuery"] });
+        }
+      },
+    );
+
     const unSync = args?.events.subscribe("syncStateChanged", (state) => {
       console.log("syncStateChanged", state);
       setTgConnected(state.isSynced);
     });
 
-    // const all = args?.events.subscribeUniversal((event, data) => {
-    //   // if (event !== "authStateChanged" && event !== "loggedIn") {
-    //   console.log("NEW EVENT:", event, data);
-    //   // }
-    // });
+    const all = args?.events.subscribeUniversal((event, data) => {
+      // if (event !== "authStateChanged" && event !== "loggedIn") {
+      console.log("NEW EVENT:", event, data);
+      // }
+    });
 
     return () => {
       unLogout?.();
       unAuth?.();
       unSync?.();
-      // all?.();
+      unNewMessage?.();
+      all?.();
     };
   }, [args?.events, frameReady]);
 

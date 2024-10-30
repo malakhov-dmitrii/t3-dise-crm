@@ -18,7 +18,7 @@ const useLogout = () => {
     setTgUserId(undefined);
     setTgConnected(false);
 
-    await tg.actions.proxy.signOut({
+    void tg.actions.proxy.signOut({
       forceInitApi: true,
     });
 

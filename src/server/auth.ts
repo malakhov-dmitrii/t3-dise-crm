@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
         console.log("Code found", code);
 
         if (!code) return null;
-        if (!code.verified) return null;
+        if (code.verified) return null;
 
         const codeExpires = dayjs(code.expires);
         if (codeExpires.isBefore(dayjs())) return null;

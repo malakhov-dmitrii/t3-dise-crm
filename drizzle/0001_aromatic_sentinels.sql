@@ -1,0 +1,1 @@
+ALTER TABLE "workspace_user" ADD COLUMN "synced_chats" json;

@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "language" varchar(255) DEFAULT 'en';
