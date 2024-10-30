@@ -14,7 +14,7 @@ const ChatItem = ({ chat }: { chat: ChatItemType }) => {
   if (!chat) return null;
   return (
     <div
-      className="rounded-md border bg-muted/50 p-2 shadow"
+      className="rounded-md border bg-muted/50 p-2 shadow-sm"
       key={chat.id}
       onClick={() => {
         void tg?.actions.proxy.openChat({ id: chat.telegramChatId.toString() });

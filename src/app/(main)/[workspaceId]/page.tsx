@@ -1,6 +1,7 @@
 import { api } from "@/trpc/server";
 import PipelineStages from "./_components/pipeline-stages";
 import PipelineWrapper from "./_components/pipeline-wrapper";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default async function Page({
   params,
@@ -14,9 +15,12 @@ export default async function Page({
   return (
     <div className="">
       <PipelineWrapper>
-        <div className="flex h-full flex-nowrap overflow-x-auto">
-          <PipelineStages workspaceId={params.workspaceId} />
-        </div>
+        <ScrollArea className="h-full">
+          <div className="flex h-full flex-nowrap">
+            <PipelineStages workspaceId={params.workspaceId} />
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </PipelineWrapper>
     </div>
   );

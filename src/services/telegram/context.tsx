@@ -147,22 +147,6 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
     1000,
   );
 
-  const throttledNewMessage = useThrottledCallback(
-    (data) => {
-      if (!workspaceId) return;
-      console.log("NEW MESSAGE", data);
-      // data
-      const chat = workspace?.workspaceChats.find(
-        (chat) => chat.telegramChatId === data.chatId,
-      );
-      if (chat) {
-        void queryClient.invalidateQueries({ queryKey: ["synFoldersQuery"] });
-      }
-    },
-    [queryClient, workspaceId],
-    1000,
-  );
-
   useEffect(() => {
     if (!frameReady || !args?.events) return;
 
@@ -190,7 +174,9 @@ export const TelegramWindowProvider: React.FC<PropsWithChildren> = ({
           (chat) => chat.telegramChatId === data.chatId,
         );
         if (chat) {
-          void queryClient.invalidateQueries({ queryKey: ["synFoldersQuery"] });
+          void queryClient.invalidateQueries({
+            queryKey: ["syncFoldersQuery"],
+          });
         }
       },
     );

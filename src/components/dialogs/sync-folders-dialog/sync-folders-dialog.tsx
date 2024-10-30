@@ -43,7 +43,7 @@ const SyncFoldersDialog = () => {
   );
 
   useQuery({
-    queryKey: ["synFoldersQuery", workspaceId],
+    queryKey: ["syncFoldersQuery", workspaceId],
     queryFn: () => handleSyncFolders(false),
     enabled: !!workspaceId && !!tg?.custom?.proxy && selectedFolders.length > 0,
   });
