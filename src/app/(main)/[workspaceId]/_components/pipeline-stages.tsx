@@ -116,7 +116,7 @@ const PipelineStages = ({ workspaceId }: { workspaceId: string }) => {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 p-2" ref={parent}>
+                <div className="mt-2 flex flex-col gap-3 p-2" ref={parent}>
                   {chats?.map((chat) => <ChatItem key={chat.id} chat={chat} />)}
                 </div>
 
@@ -150,7 +150,7 @@ const DroppableArea = ({
     <div
       ref={setNodeRef}
       className={cn(
-        `flex h-full flex-col rounded-lg border-r border-border transition-colors`,
+        `flex h-full flex-col rounded-lg border-r border-border p-1 transition-colors`,
         isOver ? "bg-muted/50" : "",
       )}
     >

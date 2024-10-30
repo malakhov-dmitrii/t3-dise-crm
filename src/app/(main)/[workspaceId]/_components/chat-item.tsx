@@ -37,19 +37,9 @@ const ChatItem = ({ chat, isDragOverlay }: ChatItemProps) => {
 
   if (!chat) return null;
 
-  // const handleClick = (e: React.MouseEvent) => {
-  //   console.log("CLICK ", isDragging, isDragOverlay);
-  //   if (isDragging || isDragOverlay) {
-  //     e.preventDefault();
-  //     return;
-  //   }
-  //   void tg?.actions.proxy.openChat({ id: chat.telegramChatId.toString() });
-  //   setIframeOpen(true);
-  // };
-
   return (
     <div
-      className={`touch-none select-none rounded-md border bg-card p-2 shadow-sm transition-all hover:bg-muted/50 ${
+      className={`touch-none select-none rounded-md border bg-card p-2 shadow-sm transition-all hover:shadow-md ${
         isDragging ? "cursor-grabbing" : "cursor-grab"
       } ${isDragOverlay ? "cursor-grabbing shadow-md" : ""}`}
       ref={setNodeRef}
