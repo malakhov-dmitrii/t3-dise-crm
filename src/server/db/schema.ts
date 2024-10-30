@@ -270,7 +270,7 @@ export const workspaceChats = createTable("workspace_chat", {
     mode: "date",
     withTimezone: true,
   }),
-
+  lastMessage: text("last_message"),
   pipelineId: varchar("pipeline_id", { length: 255 }).references(
     () => workspacePipelines.id,
   ),

@@ -166,7 +166,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>{t("Workspace")}</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Settings")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -184,7 +184,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <Settings />
-                  <span>{t("Settings")}</span>
+                  <span>{t("General")}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

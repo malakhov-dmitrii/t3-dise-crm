@@ -40,7 +40,7 @@ export async function prepareFoldersSyncPayload(data: {
               name: item.chat?.title ?? "",
               type: item.chat?.type ?? "",
               lastMessageAt: item.msg?.date ?? 0,
-              // lastMessage: item.msg?.text ?? "",
+              lastMessage: item.msg?.content.text?.text ?? "",
             };
           })
           ?.filter((it) => !!it.name) ?? [],

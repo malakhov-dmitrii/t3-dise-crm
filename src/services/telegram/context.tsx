@@ -10,7 +10,6 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useThrottle } from "@uidotdev/usehooks";
 import useThrottledCallback from "@/hooks/useThrottledCallback";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/trpc/react";

@@ -70,3 +70,7 @@ export function throttleWith<F extends AnyToVoidFunction>(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyToVoidFunction = (...args: any[]) => void;
+
+export const truncate = (message: string, length = 50) => {
+  return message.length > length ? message.slice(0, length) + "..." : message;
+};

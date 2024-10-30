@@ -1,0 +1,1 @@
+ALTER TABLE "workspace_chat" ADD COLUMN "last_message" text;

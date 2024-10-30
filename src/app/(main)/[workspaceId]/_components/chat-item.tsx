@@ -58,7 +58,12 @@ const ChatItem = ({ chat, isDragOverlay }: ChatItemProps) => {
       // onClick={handleClick}
     >
       <p className="line-clamp-1 text-sm font-medium leading-5">{chat.name}</p>
-      <p className="mt-1 text-xs text-muted-foreground">
+
+      <p className="line-clamp-1 text-xs font-light text-muted-foreground">
+        {chat.lastMessage}
+      </p>
+
+      <p className="mt-1 text-right text-xs text-muted-foreground">
         {dayjs(chat.lastMessageAt).fromNow()}
       </p>
     </div>

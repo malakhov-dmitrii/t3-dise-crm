@@ -12,6 +12,7 @@ import { createTRPCRouter } from "../trpc";
 import { eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { truncate } from "@/lib/utils";
 
 const defaultPipelineStages = ["New Lead", "Qualified Lead", "Negotiation"];
 
@@ -101,6 +102,7 @@ export const workspacesRouter = createTRPCRouter({
                 name: z.string(),
                 type: z.string(),
                 lastMessageAt: z.number(),
+                lastMessage: z.string(),
               }),
             ),
           }),
@@ -168,6 +170,7 @@ export const workspacesRouter = createTRPCRouter({
           lastMessageAt: new Date(chat.lastMessageAt * 1000),
           createdBy: ctx.session?.id,
           updatedBy: ctx.session?.id,
+          lastMessage: chat.lastMessage,
         }));
 
       if (newChats.length > 0) {
@@ -180,6 +183,9 @@ export const workspacesRouter = createTRPCRouter({
           (c) => c.telegramChatId.toString() === chat.telegramChatId.toString(),
         );
 
+        const lastMessage = truncate(
+          chatData?.lastMessage ?? chat.lastMessage ?? "",
+        );
         await ctx.db
           .update(workspaceChats)
           .set({
@@ -190,6 +196,7 @@ export const workspacesRouter = createTRPCRouter({
             lastMessageAt: chatData?.lastMessageAt
               ? new Date(chatData.lastMessageAt * 1000)
               : chat.lastMessageAt,
+            lastMessage: lastMessage,
           })
           .where(eq(workspaceChats.id, chat.id));
       }

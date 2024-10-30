@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { atom, useAtom } from "jotai";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -35,6 +36,9 @@ type SidebarContext = {
   isMobile: boolean;
   toggleSidebar: () => void;
 };
+
+const sidebarOpenAtom = atom(false);
+export const useSidebarOpen = () => useAtom(sidebarOpenAtom);
 
 const SidebarContext = React.createContext<SidebarContext | null>(null);
 
@@ -67,6 +71,7 @@ const SidebarProvider = React.forwardRef<
     },
     ref,
   ) => {
+    const [, setOpenAtom] = useSidebarOpen();
     const isMobile = useIsMobile();
     const [openMobile, setOpenMobile] = React.useState(false);
 
@@ -89,6 +94,10 @@ const SidebarProvider = React.forwardRef<
       },
       [setOpenProp, open],
     );
+
+    React.useEffect(() => {
+      setOpenAtom(open);
+    }, [open]);
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
